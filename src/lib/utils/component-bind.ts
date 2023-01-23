@@ -28,7 +28,7 @@ import type { Bind, StoreCallback } from './types'
  * <Component bind={[store, store => store.nested.item]} />
  * ```
 */
-export function createBindFunction<T, K>(store: Writable<any>) {
+export function createBindFunction<T, K>(store: Writable<any> & { reset?: Function }) {
 	let unsubs: (() => void)[] = []
 
 	let lastItem: Bind<T, K> | undefined

@@ -74,6 +74,8 @@ export type ValueStore<T> = Readonly<{
 	warning: Writable<undefined | { message: string, show?: (value: T) => boolean, update?: (value: T) => string }>
 	parent?: SvelteObject
 	initialValue?: T
+	/** Removes errors/warnings and sets the value to initial value or the parameter value provided to the function */
+	reset(value: T): void
 }> & {
 	prechange?(value: T): T
 	onValidate?(event: ValidationEvent<T>): void
@@ -101,6 +103,12 @@ export function valueStore<T>(initialValue: T): ValueStore<T> {
 		update(updater) {
 			const value = updater ? updater(get(svelteStore)) : get(svelteStore)
 			svelteStore.set(store.prechange ? store.prechange(value) : value)
+		},
+		reset(value) {
+			value ??= initialValue
+			store.set(value)
+			store.error.set(undefined)
+			store.warning.set(undefined)
 		},
 		subscribe: svelteStore.subscribe,
 		name: undefined,

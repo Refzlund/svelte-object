@@ -53,10 +53,10 @@ export function svelteObject(store: ValueStore<Record<any, any>>): SvelteObject 
 				const hasNonObject = types.incoming !== 'object' || types.existing !== 'object'
 				
 				if ((hasObject && !hasNonObject) || !hasObject)
-					incoming.set(existing)
+					incoming.reset(existing)
 			}
 			else
-				incoming.set(incoming.initialValue)
+				incoming.reset(incoming.initialValue)
 
 			let recursive = false
 			const incomingUnsub = incoming.subscribe(v => {
