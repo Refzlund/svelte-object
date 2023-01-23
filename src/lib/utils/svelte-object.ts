@@ -47,10 +47,11 @@ export function svelteObject(store: ValueStore<Record<any, any>>): SvelteObject 
 				existing: typeof existing,
 				incoming: typeof get(incoming)
 			}
-
+			
 			if (existing) {
 				const hasObject = types.incoming === 'object' || types.existing === 'object'
 				const hasNonObject = types.incoming !== 'object' || types.existing !== 'object'
+				
 				if ((hasObject && !hasNonObject) || !hasObject)
 					incoming.set(existing)
 			}

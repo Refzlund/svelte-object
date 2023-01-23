@@ -66,7 +66,7 @@
 
 <container>
 	
-	<I.Object bind:store={s} let:store let:value  test={testAttribute} disabled={$s?.disableAll} >
+	<I.Object bind:store={s} let:store let:value value={{nested:{str:'asd'}}}  test={testAttribute} disabled={$s?.disableAll} >
 		<div style='flex-direction: row;'>
 			<label for='disableall'>Disable all</label>
 			<input id='disableall' type='checkbox' use:bind={[store, s => s.disableAll]} />
@@ -78,6 +78,9 @@
 					Input fields with `use:bind`
 					<input use:bind={[store, s => s.test]} />
 					<input use:bind={t} />
+					Components with `bind`
+					<I.Text bind={[store, s => s.test]} />
+					<I.Text bind={t} />
 					<I.Number name='min'>Minimum for the input below</I.Number>
 					<I.Number min={value.min} name='num'>Has min</I.Number>
 					<I.Text name='{$t}'>{$t}</I.Text>

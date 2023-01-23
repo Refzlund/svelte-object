@@ -1,4 +1,4 @@
-import { get, type Writable } from 'svelte/store'
+import type { Writable } from 'svelte/store'
 import { storeValue } from './store-value'
 import { onDestroy } from 'svelte'
 import type { Bind } from './types'
@@ -28,20 +28,21 @@ import type { Bind } from './types'
  * <Component bind={[store, store => store.nested.item]} />
  * ```
 */
-export function createBindFunction<T, K>(store: Writable<any> & { attributes? }) {
+export function createBindFunction<T, K>(store: Writable<any>) {
 	let unsubs: (() => void)[] = []
 
-	// TODO: Also bind to attributes
-
+	let lastItem: Bind<T, K> | undefined
 	function updateBind(item: Bind<T, K> | undefined) {
+		if(item === lastItem) return
 		for (let unsub of unsubs) {
 			unsub()
 			unsubs = []
 		}
 		if (!item) return
+		lastItem = item
 		const { getValue, setValue, store: bindStore } = storeValue(item)
 
-		setValue(get(store) as any)
+		store.set(getValue())
 		let recursive = false
 		const bindUnsub = bindStore.subscribe(v => {
 			const value = getValue()
