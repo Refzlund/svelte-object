@@ -16,6 +16,9 @@ const config = {
 			'$src': 'src',
 			'$utils': 'src/lib/utils'
 		}
+	},
+	package: {
+		exports: (path) => path === 'index.ts'
 	}
 };
 
