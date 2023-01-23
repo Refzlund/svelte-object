@@ -54,6 +54,6 @@ export function storeValue<T, K>(item: Bind<T, K>) {
 	}
 
 	return {
-		getValue, setValue, store
+		getValue, setValue, store, fn
 	}
 }

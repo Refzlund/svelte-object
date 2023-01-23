@@ -1,7 +1,7 @@
 import type { Writable } from 'svelte/store'
 import { storeValue } from './store-value'
 import { onDestroy } from 'svelte'
-import type { Bind } from './types'
+import type { Bind, StoreCallback } from './types'
 
 /**
  * ### Usage - Component Internals
@@ -32,15 +32,22 @@ export function createBindFunction<T, K>(store: Writable<any>) {
 	let unsubs: (() => void)[] = []
 
 	let lastItem: Bind<T, K> | undefined
+	let lastFn: StoreCallback<T, K> | undefined
 	function updateBind(item: Bind<T, K> | undefined) {
 		if(item === lastItem) return
 		for (let unsub of unsubs) {
 			unsub()
 			unsubs = []
 		}
-		if (!item) return
+		if (!item)
+			return
+		
+		const { getValue, setValue, store: bindStore, fn } = storeValue(item)
+		if (fn?.toString() == lastFn?.toString())
+			return
+
+		lastFn = fn
 		lastItem = item
-		const { getValue, setValue, store: bindStore } = storeValue(item)
 
 		store.set(getValue())
 		let recursive = false

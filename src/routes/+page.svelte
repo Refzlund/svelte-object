@@ -30,7 +30,7 @@
 	onMount(async () => {
 		s.update(v => {
 			v.test = 'herp'
-			v['nested'] = { inside: { deep: '1st' }, str: '' }
+			v['nested'] = { ...(v['nested'] || { str:'' }), inside: { deep: '1st' } }
 			v['another'] = { nested: { 'some-text': 'A' } }
 			return v
 		})
@@ -66,7 +66,7 @@
 
 <container>
 	
-	<I.Object bind:store={s} let:store let:value value={{nested:{str:'asd'}}}  test={testAttribute} disabled={$s?.disableAll} >
+	<I.Object bind:store={s} let:store let:value value={{nested:{str:'Pre-defined value'}}}  test={testAttribute} disabled={$s?.disableAll} >
 		<div style='flex-direction: row;'>
 			<label for='disableall'>Disable all</label>
 			<input id='disableall' type='checkbox' use:bind={[store, s => s.disableAll]} />
@@ -83,8 +83,10 @@
 					<I.Text bind={t} />
 					<I.Number name='min'>Minimum for the input below</I.Number>
 					<I.Number min={value.min} name='num'>Has min</I.Number>
+					<h4>Dynamic name</h4>
 					<I.Text name='{$t}'>{$t}</I.Text>
-					<!-- <I.Text bind={[store, s => s[$t]]}>bind {$t}</I.Text> -->
+					<!-- <h4>Dynamic bind - Does not work.</h4> -->
+					<!-- <I.Text bind={[store, s => s[$t || '']]}>bind {$t}</I.Text> -->
 				</div>
 
 				<div class='nested'>
@@ -95,7 +97,9 @@
 					</div>
 					<I.Array name='array' let:store let:value let:attributes disabled={value.disableAll || value.disabledArray} value={[ { name: 'Lillemis', age: 5 } ]}>
 						{#each value as item, i}
-							<!-- <I.Text bind={[store, store => store[i].name]}>{item.name}</I.Text> -->
+							<h4>bind</h4>
+							<I.Text bind={[store, store => store[i].name]}>{item.name}</I.Text>
+							<h4>object</h4>
 							<I.Object name='{i}'>
 								<I.Text name='name'>Name</I.Text>
 								<I.Number name='age'>Age</I.Number>
@@ -173,7 +177,10 @@
 	h4 {
 		padding: 0;
 		margin: 0;
-		margin-bottom: 5px;
+		margin-bottom: 0px;
+		&:not(:first-child) {
+			margin-top: 10px;
+		}
 	}
 	
 	container {
