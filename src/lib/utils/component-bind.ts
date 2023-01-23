@@ -34,12 +34,13 @@ export function createBindFunction<T, K>(store: Writable<any> & { reset?: Functi
 	let lastItem: Bind<T, K> | undefined
 	let lastFn: StoreCallback<T, K> | undefined
 	function updateBind(item: Bind<T, K> | undefined) {
-		if(item === lastItem) return
+		if (item === lastItem)
+			return
 		for (let unsub of unsubs) {
 			unsub()
 			unsubs = []
 		}
-		if (!item)
+		if (!item || !item?.[0])
 			return
 		
 		const { getValue, setValue, store: bindStore, fn } = storeValue(item)
