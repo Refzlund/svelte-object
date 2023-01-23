@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import type { ValueStoreContent } from 'svelte-object'
+	import Object from 'svelte-object/components/Object.svelte'
 	import I, { bind, type ValueStore } from './example'
 
 	let s: ValueStore<{ 
@@ -152,6 +153,22 @@
 			<I.Number name='age'>age</I.Number>
 		</I.Object>
 	</div>
+
+	<div>
+		<I.Object let:store>
+			<h4>Validation test</h4>
+			<button on:click={() => console.log('valid:', store.validate())}>Validate inputs</button>
+			<I.Text name='required' required>Required</I.Text>
+			<I.Text name='min' min={5} value='as'>Min. 5 characters</I.Text>
+			<I.Object name='nested'>
+				<div class='nested'>
+					<I.Text name='min' min={20} value='giraffeisnice'>Min. 20 characters</I.Text>
+				</div>
+			</I.Object>
+		</I.Object>
+	</div>
+
+	<div style='height:1000px;'></div>
 	
 </container>
 

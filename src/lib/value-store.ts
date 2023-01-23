@@ -121,7 +121,7 @@ export function valueStore<T>(initialValue: T): ValueStore<T> {
 				value: value || get(store),
 				error, warning
 			})
-			return !!get(store.error)
+			return !get(store.error)
 		},
 		error: writable(undefined),
 		warning: writable(undefined)
