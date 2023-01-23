@@ -1,5 +1,5 @@
-import adapter from '@sveltejs/adapter-auto';
-import preprocess from 'svelte-preprocess';
+import adapter from '@sveltejs/adapter-auto'
+import preprocess from 'svelte-preprocess'
 import { watchAPI } from 'sveltekit-zero-api'
 
 if (process.env.NODE_ENV !== 'production') {
@@ -12,7 +12,7 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		alias: {
-			'svorms': 'src/lib',
+			'svelte-object': 'src/lib',
 			'$src': 'src',
 			'$utils': 'src/lib/utils'
 		}

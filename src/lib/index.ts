@@ -1,13 +1,13 @@
-import Object from './components/Object.svelte'
-import Input from './components/Input.svelte'
+export { bind } from './bind'
+export { valueStore } from './value-store'
 
-const I = {
-	Object,
-	Input
-} 
+export { default as Object } from './components/Object.svelte'
+export { default as Array } from './components/Array.svelte'
 
-export type InputType =
-	'text'
-	| 'number'
+import type { ComponentProps } from 'svelte'
+import Value from './components/Value.svelte'
 
-export default I
+export type { ValueStore, ValueStoreContent } from './value-store'
+export type ValueProps<T, K> = Omit<ComponentProps<Value<T, K>>, 'store'>
+
+export { Value }

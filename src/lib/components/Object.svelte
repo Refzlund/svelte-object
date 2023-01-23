@@ -1,53 +1,35 @@
-<script lang="ts">
-	import { getContext, onDestroy, setContext } from 'svelte'
-	import { ParentObject, validEndpoint } from '$utils/field'
-	import LinkedStore from '$utils/linked-store'
-	import type { Field, Endpoint } from './types'
-	
+<script lang='ts'>
+	import type { Writable } from 'svelte/store'
+	import { valueStore, type ValueStore } from 'svelte-object/value-store'
+	import { createBindFunction } from 'svelte-object/utils/component-bind'
+	import { svelteObject } from 'svelte-object/utils/svelte-object'
+	import type { Bind, StoreCallback } from 'svelte-object/utils/types'
 
-	// * Two-way binding for store and value
+	type T = $$Generic<Record<any, any>>
+	type K = $$Generic
+	type O = $$Generic<Record<String, any>>
+
+	type P = $$Generic<string>
+
+	export const store = valueStore<T>({} as T)
 	export let 
-		name: string | undefined = undefined,
-		value: Record<any, any> = {},
-		// * -> RECURSIVE POST
-		POST: Endpoint = undefined,
-		GET:  Endpoint = undefined
-	
-	const store = new LinkedStore(value, v => value = v)
-	$: store.reactivity(value)
-	
-	const parent = getContext('parent') as Field | undefined
-	ParentObject(parent, store, name)
-	
-	// TODO: Deep spread
-	$: validEndpoint(GET) && (typeof GET === 'function' ? GET : GET.GET)().Success(({body}) => store.update(u => ({...u, ...body})))
+		name: string | number | undefined = undefined,
+		bind: Bind<T, K> | undefined = undefined,
+		attributes: Record<any, any> | undefined = undefined
 
-	export function submit() {
-		if(!validEndpoint(POST))
-			return
-		(typeof POST === 'function' ? POST : POST.POST)({ body: $store } as any)
+	store.prechange = v => {
+		if(typeof v !== 'object')
+			v = $store
+		return v
 	}
+	store.setName(name)
 
-	const onDestroyed: (()=>void)[] = []
+	const obj = svelteObject<O>(store)
+	$: obj.$$restProps.set({...$$restProps, ...attributes} as any)
 
-	const field: Field<'object'> = {
-		type: 'object',
-		parent,
-		store,
-		applyStore: (apply, key) => {
-			onDestroyed.push(
-				apply.subscribe(a => store.update(s => {
-					s[key] = a
-					return s
-				})),
-				store.subscribe(s => apply.update(a => s[key]))
-			)
-		}
-	}
-
-	setContext('parent', field)
-
-	onDestroy(() => onDestroyed.forEach(v => v()))
+	const updateBind = createBindFunction<T, K>(store)
+	$: updateBind(bind)
+	
 </script>
 
-<slot {value} {store} {submit} update={() => store.update(k => k)} />
+<slot {store} value={$store}/>
