@@ -80,10 +80,13 @@ A simple component for a string could look like this:
 	// Indicates what type the store contains.
 	type T = string | undefined
 	
-	// Is a required generic type. It types the `bind` function that can be used in relation to the component.
+	// Is a required generic type. It types the `bind` function
+	// that can be used in relation to the component.
 	type K = $$Generic
 
-	// This lists all attributes (props) available to this component. Notice it extends `ValueProps` which are the properties that belongs to the headless component "Value"
+	// This lists all attributes (props) available to this component. 
+	// Notice it extends `ValueProps` which are the properties that 
+	// belongs to the headless component "Value"
 	interface $$Props extends ValueProps<T, K> {
 		/** Initial value */
 		value?: T
