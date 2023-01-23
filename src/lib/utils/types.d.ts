@@ -19,3 +19,10 @@ export type StoreCallback<T, K> = (s: K) => T
  * 
 */
 export type Bind<T, K> = Writable<T> | [Writable<K>, StoreCallback<T, K>]
+
+export type RecursivePartial<T> = {
+	[P in keyof T]?:
+	T[P] extends (infer U)[] ? RecursivePartial<U>[] :
+	T[P] extends object ? RecursivePartial<T[P]> :
+	T[P]
+}

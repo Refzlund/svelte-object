@@ -2,16 +2,18 @@
 	import { valueStore } from 'svelte-object/value-store'
 	import { createBindFunction } from 'svelte-object/utils/component-bind'
 	import { svelteObject } from 'svelte-object/utils/svelte-object'
-	import type { Bind } from 'svelte-object/utils/types'
+	import type { Bind, RecursivePartial } from 'svelte-object/utils/types'
 
 	type T = $$Generic<Record<any, any>>
 	type K = $$Generic
 
 	type P = $$Generic<string>
 
-	/** Initial value */
-	export let value: T = {} as T
-	export const store = valueStore<T>(value)
+	/** Initial value (will be prioritized over partial) */
+	export let value: T | undefined = undefined
+	/** Initial value (value property is prioritized over this) */
+	export let partial: RecursivePartial<T> | undefined = undefined
+	export const store = valueStore<T>((value || partial || {}) as T)
 	export let 
 		name: string | number | undefined = undefined,
 		bind: Bind<T, K> | undefined = undefined

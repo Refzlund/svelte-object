@@ -66,7 +66,7 @@
 
 <container>
 	
-	<I.Object bind:store={s} let:store let:value value={{nested:{str:'Pre-defined value'}}}  test={testAttribute} disabled={$s?.disableAll} >
+	<I.Object bind:store={s} let:store let:value partial={{ nested: { str: 'Pre-defined value' } }} test={testAttribute} disabled={$s?.disableAll} >
 		<div style='flex-direction: row;'>
 			<label for='disableall'>Disable all</label>
 			<input id='disableall' type='checkbox' use:bind={[store, s => s.disableAll]} />
