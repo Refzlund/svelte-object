@@ -155,20 +155,35 @@
 	</div>
 
 	<div>
-		<I.Object let:store>
-			<h4>Validation test</h4>
-			<button on:click={() => console.log('valid:', store.validate())}>Validate inputs</button>
-			<I.Text name='required' required>Required</I.Text>
-			<I.Text name='min' min={5} value='as'>Min. 5 characters</I.Text>
-			<I.Object name='nested'>
-				<div class='nested'>
-					<I.Text name='min' min={20} value='giraffeisnice'>Min. 20 characters</I.Text>
+		<I.Object let:store let:value>
+			<split>
+				<div>
+					<h4>Validation test</h4>
+					<button on:click={() => console.log('valid:', store.validate())}>Validate inputs</button>
+					<I.Text name='required' required>Required</I.Text>
+					<I.Text name='min' min={5} value='as'>Min. 5 characters</I.Text>
+					<I.Object name='nested'>
+						<div class='nested'>
+							<I.Text name='min' min={20} value='giraffeisnice'>Min. 20 characters</I.Text>
+							<div class='nested'>
+								<I.Array name='array' let:value value={[ '', 'short' ]}>
+									{#each value as item, i}
+										<I.Text name='{i}' required min={7}>Required Min. 7 characters</I.Text>
+									{/each}
+								</I.Array>
+							</div>
+						</div>
+					</I.Object>
 				</div>
-			</I.Object>
+				
+				<p>
+					{JSON.stringify(value, null, '\t')}
+				</p>
+			</split>
 		</I.Object>
 	</div>
 
-	<div style='height:1000px;'></div>
+	<div style='height:100vh;'></div>
 	
 </container>
 

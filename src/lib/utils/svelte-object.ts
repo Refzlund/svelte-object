@@ -1,5 +1,5 @@
 import { onDestroy, setContext, tick } from 'svelte'
-import type { ValueStore } from 'svelte-object/value-store'
+import type { ValueStore } from '../value-store'
 import { get, writable, type Unsubscriber, type Writable } from 'svelte/store'
 
 export type SvelteObject = Readonly<{
@@ -12,7 +12,6 @@ export type SvelteObject = Readonly<{
 	removeValueStore(incoming: ValueStore<any>): void
 }>
 
-/** NOTE: This function sets `store.onValidate = () => {...}` */
 export function svelteObject(store: ValueStore<Record<any, any>>): SvelteObject {
 	/** Recursive attributes */
 	const $$restProps = writable({})
@@ -34,16 +33,6 @@ export function svelteObject(store: ValueStore<Record<any, any>>): SvelteObject 
 		unsubs.set(symbol, [unsub])
 	}
 
-	store.onValidate = ({ trigger: { blur, change }, error }) => {
-		const type = blur ? 'blur' : change ? 'change' : 'forced'
-		let valid = true
-		for (let store of obj.stores)
-			if (!store.validate(type))
-				valid = false
-		if (!valid)
-			error(':(')
-	}
-
 	const obj: SvelteObject = {
 		stores: [],
 		$$restProps: $$restProps,
@@ -53,7 +42,7 @@ export function svelteObject(store: ValueStore<Record<any, any>>): SvelteObject 
 			if (typeof incoming.name === 'undefined')
 				return
 
-			const existing = get(store)[incoming.name]
+			const existing = get<any>(store)[incoming.name]
 			const types = {
 				existing: typeof existing,
 				incoming: typeof get(incoming)

@@ -1,8 +1,9 @@
 <script lang='ts'>
-	import { createBindFunction } from 'svelte-object/utils/component-bind'
-	import { svelteObject } from 'svelte-object/utils/svelte-object'
-	import type { Bind } from 'svelte-object/utils/types'
-	import valueStoreArray from 'svelte-object/utils/value-store-array'
+	import { createBindFunction } from '$lib/utils/component-bind'
+	import onValidate from '$lib/utils/object-onValidate'
+	import { svelteObject } from '$lib/utils/svelte-object'
+	import type { Bind } from '$lib/utils/types'
+	import valueStoreArray from '$lib/utils/value-store-array'
 
 	type T = $$Generic<Array<any>>
 	type K = $$Generic
@@ -28,6 +29,8 @@
 	const obj = svelteObject(store)
 	$: obj.$$restProps.set($$restProps as any)
 	const attributes = obj.attributes
+
+	store.onValidate = onValidate(obj)
 
 	const updateBind = createBindFunction<T, K>(store)
 	$: updateBind(bind)

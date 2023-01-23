@@ -1,8 +1,9 @@
 <script lang='ts'>
-	import { valueStore } from 'svelte-object/value-store'
-	import { createBindFunction } from 'svelte-object/utils/component-bind'
-	import { svelteObject } from 'svelte-object/utils/svelte-object'
-	import type { Bind, RecursivePartial } from 'svelte-object/utils/types'
+	import { valueStore } from '$lib/value-store'
+	import { createBindFunction } from '$lib/utils/component-bind'
+	import { svelteObject } from '$lib/utils/svelte-object'
+	import type { Bind, RecursivePartial } from '$lib/utils/types'
+	import onValidate from '$lib/utils/object-onValidate'
 
 	type T = $$Generic<Record<any, any>>
 	type K = $$Generic
@@ -30,6 +31,8 @@
 	const obj = svelteObject(store)
 	$: obj.$$restProps.set($$restProps as any)
 	const attributes = obj.attributes
+
+	store.onValidate = onValidate(obj)
 
 	const updateBind = createBindFunction<T, K>(store)
 	$: updateBind(bind)

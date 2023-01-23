@@ -42,6 +42,8 @@ export function storeValue<T, K>(item: Bind<T, K>) {
 		}
 		store.update(v => {
 			let obj = v
+			if (!obj)
+				return v
 			for (let key of keys) {
 				if (!obj[key]) {
 					obj[key] = {}

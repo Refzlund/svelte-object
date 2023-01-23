@@ -1,4 +1,8 @@
 # svelte-object
+> I'd be happy to receive criticism and feedback on the library's current state.
+> 
+> Improvements to documentation will come
+
 The goal of svelte-object is to create and maintain objects using components. Values are stores, and can therefore be intuitively subscribed to, and updated.
 
 Keep in mind that this library does not provide input- or form components. It provides a framework to create your own components.

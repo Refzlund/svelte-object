@@ -7,28 +7,27 @@ type ValueStoreArray<T extends Array<any>> = ValueStore<T> & {
 }
 
 export default function valueStoreArray<T extends Array<any>>(initialValue: T): ValueStoreArray<T> {
-	const store = valueStore(initialValue)
+	const store = valueStore(initialValue) as ValueStoreArray<T>
 
-	return {
-		...store,
-		push(item) {
-			let length = -1
-			store.update(v => {
-				v ??= [] as InferArray<T> 
-				v.push(item)
-				length = v.length
-				return v
-			})
-			return length
-		},
-		removeByIndex(i) {
-			let item: InferArray<T> | undefined
-			store.update(v => {
-				v ??= [] as InferArray<T> 
-				item = v[i]
-				return [...v.slice(0, i), ...v.slice(i + 1)] as T
-			})
-			return item
-		}
+	store.push = function push(item) {
+		let length = -1
+		store.update(v => {
+			v ??= [] as InferArray<T>
+			v.push(item)
+			length = v.length
+			return v
+		})
+		return length
 	}
+	store.removeByIndex = function removeByIndex(i) {
+		let item: InferArray<T> | undefined
+		store.update(v => {
+			v ??= [] as InferArray<T>
+			item = v[i]
+			return [...v.slice(0, i), ...v.slice(i + 1)] as T
+		})
+		return item
+	}
+	
+	return store
 }
