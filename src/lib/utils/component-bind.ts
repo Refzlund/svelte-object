@@ -43,6 +43,11 @@ export function createBindFunction<T, K>(store: Writable<any>) {
 			return
 		
 		const { getValue, setValue, store: bindStore, fn } = storeValue(item)
+		/**
+		 * This is check in the case of  `<Component bind={[store, s => s[$someString]]}>`
+		 * 
+		 * That binding doesn't work (as of now) - and would otherwise crash the site.
+		*/
 		if (fn?.toString() == lastFn?.toString())
 			return
 
