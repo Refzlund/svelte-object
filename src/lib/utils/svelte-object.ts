@@ -39,7 +39,7 @@ export function svelteObject<T extends Record<string, any> = any>(store: ValueSt
 		attributes: { subscribe: attributes.subscribe },
 		addValueStore(incoming: ValueStore<any>) {
 			obj.removeValueStore(incoming)
-			if (!incoming.name)
+			if (typeof incoming.name === 'undefined')
 				return
 
 			const existing = get(store)[incoming.name]
@@ -54,6 +54,8 @@ export function svelteObject<T extends Record<string, any> = any>(store: ValueSt
 				if ((hasObject && !hasNonObject) || !hasObject)
 					incoming.set(existing)
 			}
+			else
+				incoming.set(undefined)
 
 			let recursive = false
 			const incomingUnsub = incoming.subscribe(v => {

@@ -8,14 +8,14 @@
 	
 	interface $$Props {
 		store: ValueStore<T>
-		name?: string
+		name?: string | number
 		disabled?: boolean
 		bind?: Bind<T, K>
 	}
 
 	export let 
 		store: ValueStore<T>,
-		name: string | undefined = undefined,
+		name: string | number | undefined = undefined,
 		bind: Bind<T, K> | undefined = undefined
 
 	export const validate = store.validate

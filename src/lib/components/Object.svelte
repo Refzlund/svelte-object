@@ -10,7 +10,9 @@
 
 	type P = $$Generic<string>
 
-	export const store = valueStore<T>({} as T)
+	/** Initial value */
+	export let value: T = {} as T
+	export const store = valueStore<T>(value)
 	export let 
 		name: string | number | undefined = undefined,
 		bind: Bind<T, K> | undefined = undefined,

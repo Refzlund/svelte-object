@@ -4,11 +4,13 @@
 	type T = string | undefined
 	type K = $$Generic
 	interface $$Props extends ValueProps<T, K> {
+		value?: T
 		min?: number
 		required?: boolean
 	}
 
-	export const store = valueStore<T>(undefined)
+	export let value: T = undefined
+	export const store = valueStore<T>(value)
 
 	export let 
 		required = false,

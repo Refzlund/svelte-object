@@ -1,7 +1,7 @@
 import { storeValue } from './utils/store-value'
 import type { Bind } from './utils/types'
 
-export function bind<T, K>(node, item: Bind<T, K> | undefined) {
+export function bind<T, K>(node: HTMLInputElement, item: Bind<T, K> | undefined) {
 	let destroy: (() => void) | undefined = undefined
 	function init(item: Bind<T, K> | undefined) {
 		if(!item) return
@@ -11,12 +11,13 @@ export function bind<T, K>(node, item: Bind<T, K> | undefined) {
 		if (initial)
 			node.value = initial
 
+		const check = node.type === 'checkbox' || node.type === 'radio'
 		const unsub = store.subscribe(v => {
-			node.value = getValue() || ''
+			node.value = getValue() || (check ? false : '')
 		})
 
 		function update() {
-			setValue(node.value)
+			setValue((check ? node.checked : node.value) as any)
 		}
 
 		node.addEventListener('input', update)

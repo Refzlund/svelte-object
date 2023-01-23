@@ -28,8 +28,10 @@ import type { Bind } from './types'
  * <Component bind={[store, store => store.nested.item]} />
  * ```
 */
-export function createBindFunction<T, K>(store: Writable<any>) {
+export function createBindFunction<T, K>(store: Writable<any> & { attributes? }) {
 	let unsubs: (() => void)[] = []
+
+	// TODO: Also bind to attributes
 
 	function updateBind(item: Bind<T, K> | undefined) {
 		for (let unsub of unsubs) {

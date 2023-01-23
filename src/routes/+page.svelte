@@ -17,41 +17,46 @@
 				'some-text': string
 			}
 		}
+		disabledArray: boolean
 	}>
 
 	let t: ValueStore<string | undefined>
 
 	let testAttribute = 'This is a test attribute'
 
-	onMount(() => {
+	const sleep = async (ms: number) => new Promise(r => setTimeout(r, ms))
+
+	onMount(async () => {
 		s.update(v => {
 			v.test = 'herp'
 			v['nested'] = { inside: { deep: '1st' }, str: '' }
 			v['another'] = { nested: { 'some-text': 'A' } }
 			return v
 		})
-		setTimeout(() => {
-			s.update(v => {
-				v.test = 'derp'
-				v.nested.inside.deep = '2nd'
-				v.another.nested['some-text'] = 'B'
-				return v
-			})
-			setTimeout(() => {
-				t.set('slurp')
-				s.update(v => {
-					v.nested.inside.deep = '3rd'
-					v.another.nested['some-text'] = 'C'
-					v.nested.str = 'str'
-					return v
-				})
-				testAttribute = 'It is still a test.'
-				setTimeout(() => {
-					s.set({} as ValueStoreContent<typeof s>)
-				}, 2000)
-			}, 750)
-		}, 750)
 		
+		await sleep(750)
+		
+		s.update(v => {
+			v.test = 'derp'
+			v.nested.inside.deep = '2nd'
+			v.another.nested['some-text'] = 'B'
+			return v
+		})
+		
+		await sleep(750)
+		
+		t.set('slurp')
+		s.update(v => {
+			v.nested.inside.deep = '3rd'
+			v.another.nested['some-text'] = 'C'
+			v.nested.str = 'str'
+			return v
+		})
+		testAttribute = 'It is still a test.'
+		
+		await sleep(2000)
+		
+		s.set({} as ValueStoreContent<typeof s>)
 	})
 
 </script>
@@ -73,6 +78,25 @@
 			<I.Number name='min'>Minimum for the input below</I.Number>
 			<I.Number min={value.min} name='num'>Has min</I.Number>
 			<I.Text name='{$t}'>{$t}</I.Text>
+			<!-- <I.Text bind={[store, s => s[$t]]}>bind {$t}</I.Text> -->
+		</div>
+
+		<div class='nested'>
+			<h4>Arrays!</h4>
+			<div style='flex-direction: row;'>
+				<label>Toggle disabled</label>
+				<input type='checkbox' use:bind={[store, s => s.disabledArray]} />
+			</div>
+			<I.Array name='array' let:store let:value disabled={value.disabledArray}>
+				{#each value as item, i}
+					<!-- <I.Text bind={[store, store => store[i].name]}>{item.name}</I.Text> -->
+					<I.Object name='{i}'>
+						<I.Text name='name'>{item.name}</I.Text>
+						<I.Number name='age'>{item.age}</I.Number>
+					</I.Object> 
+				{/each}
+				<button on:click={() => store.update(v => { v.push({}); return v })}>Add item</button>
+			</I.Array>
 		</div>
 		
 		<div class='nested'>
@@ -105,7 +129,7 @@
 	<div>
 		<h4>Disabled recursively</h4>
 		<I.Object disabled test='disabled'>
-			<I.Text name='name'>Name</I.Text>
+			<I.Text name='name' value='disabled for shur'>Name</I.Text>
 			<I.Number name='age'>age</I.Number>
 		</I.Object>
 	</div>

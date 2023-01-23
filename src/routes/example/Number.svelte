@@ -1,14 +1,16 @@
 <script lang='ts'>
 	
-	import { valueStore, bind, Value, type ValueProps } from 'svelte-object'
+	import { valueStore, Value, type ValueProps } from 'svelte-object'
 
 	type T = number | undefined
 	type B = $$Generic
 	interface $$Props extends ValueProps<T, B> {
+		value?: T
 		min?: number | undefined
 	}
 
-	export const store = valueStore<T>(undefined)
+	export let value: T = undefined
+	export const store = valueStore<T>(value)
 	
 	export let min: number | undefined = undefined
 

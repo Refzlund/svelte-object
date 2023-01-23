@@ -162,7 +162,6 @@ export function valueStore<T>(initialValue: T): ValueStore<T> {
 		}
 
 		store.validate('change')
-		store.v = get(store)
 	})
 
 	onMount(() => {
