@@ -3,18 +3,30 @@ The goal of svelte-object is to create and maintain objects using components. Va
 
 Keep in mind that this library does not provide input- or form components. It provides a framework to create your own components.
 
-It is not limited to inputs and forms. There are many ways you could use this structure to create a responsive interface and engaging.
+It is not limited to inputs and forms. There are many ways you could use this structure to create a responsive and engaging interface.
 
-## Features
+### Motivation
+Components can quickly become bloated with reactive declarations (`$:`). JSON objects are often duplicated in the script tag to define an object, and the component structure themselves. FormData objects are no fun to work with.
+
+My goals are
+- Better developer experience
+- Higher dev throughput
+- Stores > Reactive components statements/declarations
+- Unified way to relate stores with components and HTML-tags (with `bind` and `use:bind`)
+- Reduce unforseen bugs
+- Reactive data
+- Clear and concise component language
+
+### Features
 - Ease of development for input validation
 - Trigger validation methods manually (will be recursive when used on Object or Array)
 - 'Rest Params' on Objects and Arrays cascades to children recursively
 - Custom `bind` utility function for components and `use:directive` for HTML-elements
 
-## Requirements
+### Requirements
 Understanding [Svelte Stores](https://svelte.dev/tutorial/writable-stores), how to make [custom stores](https://svelte.dev/tutorial/custom-stores) and how to [derive a store](https://svelte.dev/tutorial/derived-stores) will prove to be important assets to maximizing the use of this library.
 
-## Example use case
+### Example use case
 Making use of [sveltekit-zero-api](https://github.com/refzlund/sveltekit-zero-api). In this example `GET` will fetch data if an `id` is provided. 
 Because of svelte-object, the necessary key-value pairs will populate the relevant inputs.
 
@@ -42,3 +54,4 @@ Because of svelte-object, the necessary key-value pairs will populate the releva
 </I.Form>
 ```
 
+## Get Started
