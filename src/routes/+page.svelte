@@ -1,5 +1,4 @@
 <script lang="ts">
-	import api from '$src/api'
 	import { onMount } from 'svelte'
 	import type { ValueStoreContent } from 'svelte-object'
 	import I, { bind, type ValueStore } from './example'

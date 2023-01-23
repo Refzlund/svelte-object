@@ -18,6 +18,8 @@
 		attributes: Record<any, any> | undefined = undefined
 
 	store.prechange = v => {
+		if(!v)
+			return {} as T
 		if(typeof v !== 'object')
 			v = $store
 		return v

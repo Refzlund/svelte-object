@@ -12,11 +12,11 @@ It is not limited to inputs and forms. There are many ways you could use this st
 - Custom `bind` utility function for components and `use:directive` for HTML-elements
 
 ## Requirements
-Understanding [Svelte Stores](https://svelte.dev/tutorial/writable-stores), how to make [custom stores](https://svelte.dev/tutorial/custom-stores) and how to [derive a store](https://svelte.dev/tutorial/derived-stores) will prove to be a important assets to maximizing the use of this library.
+Understanding [Svelte Stores](https://svelte.dev/tutorial/writable-stores), how to make [custom stores](https://svelte.dev/tutorial/custom-stores) and how to [derive a store](https://svelte.dev/tutorial/derived-stores) will prove to be important assets to maximizing the use of this library.
 
 ## Example use case
 Making use of [sveltekit-zero-api](https://github.com/refzlund/sveltekit-zero-api). In this example `GET` will fetch data if an `id` is provided. 
-Because of svelte-store, the necessary key-value pairs will populate the relevant inputs.
+Because of svelte-object, the necessary key-value pairs will populate the relevant inputs.
 
 `Form` which uses svelte-object's Object component contains all relevant information to POST and PATCH data. `Form` will also call the `validate()` function on the svelte-object's Object-component store to validate the form inputs.
 ```html
