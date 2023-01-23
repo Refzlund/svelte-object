@@ -1,8 +1,8 @@
 <script lang='ts'>
-	import { valueStore } from 'svelte-object/value-store'
 	import { createBindFunction } from 'svelte-object/utils/component-bind'
 	import { svelteObject } from 'svelte-object/utils/svelte-object'
 	import type { Bind } from 'svelte-object/utils/types'
+	import valueStoreArray from 'svelte-object/utils/value-store-array'
 
 	type T = $$Generic<Array<any>>
 	type K = $$Generic
@@ -11,8 +11,8 @@
 	type P = $$Generic<string>
 
 	/** Initial value */
-	export let value: any[] = []
-	export const store = valueStore<T>(value as T)
+	export let value: T | undefined = undefined
+	export const store = valueStoreArray<T>((value || []) as T)
 	export let 
 		name: string | number | undefined = undefined,
 		bind: Bind<T, K> | undefined = undefined,

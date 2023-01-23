@@ -73,6 +73,7 @@ export type ValueStore<T> = Readonly<{
 	error: Writable<undefined | { message: string, show?: (value: T) => boolean, update?: (value: T) => string }>
 	warning: Writable<undefined | { message: string, show?: (value: T) => boolean, update?: (value: T) => string }>
 	parent?: SvelteObject
+	initialValue?: T
 }> & {
 	prechange?(value: T): T
 	onValidate?(event: ValidationEvent<T>): void
@@ -90,8 +91,9 @@ export type ValueStoreContent<T extends ValueStore<any>> = T extends ValueStore<
 export function valueStore<T>(initialValue: T): ValueStore<T> {
 	const obj = getContext('svelte-object') as SvelteObject
 	const svelteStore = writable<T>(initialValue)
-
+	
 	const store: ValueStore<T> = {
+		initialValue,
 		parent: obj,
 		set(value) {
 			svelteStore.set(store.prechange ? store.prechange(value) : value)

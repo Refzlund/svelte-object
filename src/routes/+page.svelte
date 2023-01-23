@@ -55,10 +55,9 @@
 		testAttribute = 'It is still a test.'
 		
 		await sleep(2000)
-		
-		s.set({} as ValueStoreContent<typeof s>)
 	})
 
+	const clear = () => s.set({} as ValueStoreContent<typeof s>)
 </script>
 
 <h1>{$s?.test}</h1>
@@ -69,6 +68,7 @@
 	<I.Object bind:store={s} let:store let:value  test={testAttribute} >
 		<p>
 			{JSON.stringify(value, null, '\t')}
+			<button on:click={clear}>Clear</button>
 		</p>
 		<div>
 			<I.Text bind:store={t} name='test'>test</I.Text>
@@ -84,18 +84,19 @@
 		<div class='nested'>
 			<h4>Arrays!</h4>
 			<div style='flex-direction: row;'>
-				<label>Toggle disabled</label>
-				<input type='checkbox' use:bind={[store, s => s.disabledArray]} />
+				<label for='disabledArray'>Toggle disabled</label>
+				<input id='disabledArray' type='checkbox' use:bind={[store, s => s.disabledArray]} />
 			</div>
-			<I.Array name='array' let:store let:value disabled={value.disabledArray}>
+			<I.Array name='array' let:store let:value disabled={value.disabledArray} value={[ { name: 'Lillemis', age: 5 } ]}>
 				{#each value as item, i}
 					<!-- <I.Text bind={[store, store => store[i].name]}>{item.name}</I.Text> -->
 					<I.Object name='{i}'>
-						<I.Text name='name'>{item.name}</I.Text>
-						<I.Number name='age'>{item.age}</I.Number>
+						<I.Text name='name'>Name</I.Text>
+						<I.Number name='age'>Age</I.Number>
+						<button on:click={() => store.removeByIndex(i)}>Remove {item.name}</button>
 					</I.Object> 
 				{/each}
-				<button on:click={() => store.update(v => { v.push({}); return v })}>Add item</button>
+				<button on:click={() => store.push({})}>Add item</button>
 			</I.Array>
 		</div>
 		

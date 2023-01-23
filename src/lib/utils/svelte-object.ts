@@ -55,7 +55,7 @@ export function svelteObject<T extends Record<string, any> = any>(store: ValueSt
 					incoming.set(existing)
 			}
 			else
-				incoming.set(undefined)
+				incoming.set(incoming.initialValue)
 
 			let recursive = false
 			const incomingUnsub = incoming.subscribe(v => {
