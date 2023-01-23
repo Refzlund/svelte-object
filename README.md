@@ -80,8 +80,12 @@ A simple component for a string could look like this:
 	// Indicates what type the store contains.
 	type T = string | undefined
 	
-	// Is a required generic type. It types the `bind` function
+	// A required generic type. It types the `bind` function
 	// that can be used in relation to the component.
+	//
+	// ex. <I.Text bind=[store, s => s.nested.str]> ...
+	//                          ^? = { nested: { str: string } }
+	//                    ^? = { nested: { str: string } }
 	type K = $$Generic
 
 	// This lists all attributes (props) available to this component. 
@@ -95,9 +99,7 @@ A simple component for a string could look like this:
 	export let value: T = undefined
 	export const store = valueStore<T>(value)
 
-	// Notice that `const store` is not included in $$Props.
-	// This is because we pass the store to the Value-component
-	// which takes care of typing that prop.
+	// `const store` is typed inside ValueProps<T,K>
 </script>
 ```
 
@@ -113,11 +115,62 @@ If you want to see how to apply store validation and show error message, take a 
 	let:attributes
 >
 
-	<!-- Way one to bind -->
+	<!-- Bind directly to store -->
 	<input bind:store={$store}>
 
-	<!-- Way two to bind -->
+	<!-- Bind using utility function `use:bind` -->
 	<input use:bind={store}>
 
 </Value>
+```
+
+### components/inputs/index.ts
+After you have created your components, we want to be able to access them with ease.
+
+What you can do, is import them in an index file, nest them in an object which you then can refernece.
+```ts
+import Text from './Text.svelte'
+import Date from './Date.svelte'
+import Number from './Number.svelte'
+...
+import { Object, Array } from 'svelte-object'
+
+const I = {
+	Object, Array, 
+	Text, Date, Number
+}
+
+export default I
+
+// * Additionally, you may also want to export things 
+// from `svelte-object` to make them easily available
+
+export { bind, type ValueStore } from 'svelte-object'
+```
+
+... Somewhere else
+```html
+<script>
+	import I, { bind, type ValueStore } from '$components/input'
+	/** Explicit-typed store. (Type can also just be imported from somewhere.) */
+	const store = ValueStore<{
+		checked: boolean,
+		someString: string
+	}>
+
+	function submit() {
+		store.validate()
+	}
+</script>
+
+<I.Object bind:store let:store>
+	<input type='checkbox' use:bind={[store, s => s.checked]}>
+	<!-- Note: You have to implement required validation yourself. -->
+	<I.Text name='someString' required> Label </I.Text>
+
+	<!-- <button on:click={() => store.validate()}>Validate content</button> -->
+</I.Object>
+
+<button on:click={submit}>Submit</button>
+
 ```
