@@ -71,7 +71,7 @@ export function svelteObject<T extends Record<string, any> = any>(store: ValueSt
 					recursive = true
 					tick().then(v => recursive = false)
 				}
-				incoming.set(v[incoming.name as string])
+				incoming.set(v?.[incoming.name as string])
 			})
 
 			obj.stores.push(incoming)

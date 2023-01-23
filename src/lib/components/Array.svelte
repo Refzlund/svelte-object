@@ -35,4 +35,4 @@
 	
 </script>
 
-<slot {store} value={$store}/>
+<slot {store} value={$store || []}/>
