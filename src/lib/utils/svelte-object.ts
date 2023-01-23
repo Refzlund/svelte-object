@@ -2,20 +2,20 @@ import { onDestroy, setContext, tick } from 'svelte'
 import type { ValueStore } from 'svelte-object/value-store'
 import { get, writable, type Unsubscriber, type Writable, type Readable } from 'svelte/store'
 
-export type SvelteObject<T extends Record<string, any> = any> = Readonly<{
+export type SvelteObject = Readonly<{
 	stores: ValueStore<any>[]
-	/** These are the attributes passed to this object */
-	$$restProps: Writable<T>
+	/** These are the attributes passed to this object which cascades to child Objects and Arrays*/
+	$$restProps: Writable<Record<any, any>>
 	/** These attributes is the combined attributes, and should not be written to */
-	attributes: { subscribe: Writable<T>['subscribe'] }
+	attributes: { subscribe: Writable<Record<any, any>>['subscribe'] }
 	addValueStore(incoming: ValueStore<any>): void
 	removeValueStore(incoming: ValueStore<any>): void
 }>
 
-export function svelteObject<T extends Record<string, any> = any>(store: ValueStore<Record<any, any>>): SvelteObject<T> {
+export function svelteObject(store: ValueStore<Record<any, any>>): SvelteObject {
 	/** Recursive attributes */
-	const $$restProps = writable({} as T)
-	const attributes = writable({} as T)
+	const $$restProps = writable({})
+	const attributes = writable({})
 
 	/** We're using a weakmap to have objects as keys to the unsubscribe functions */
 	const unsubs: WeakMap<any, Unsubscriber[]> = new WeakMap()
@@ -33,7 +33,7 @@ export function svelteObject<T extends Record<string, any> = any>(store: ValueSt
 		unsubs.set(symbol, [unsub])
 	}
 
-	const obj: SvelteObject<T> = {
+	const obj: SvelteObject = {
 		stores: [],
 		$$restProps: $$restProps,
 		attributes: { subscribe: attributes.subscribe },

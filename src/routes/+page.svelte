@@ -18,6 +18,7 @@
 			}
 		}
 		disabledArray: boolean
+		disableAll: boolean
 	}>
 
 	let t: ValueStore<string | undefined>
@@ -65,61 +66,71 @@
 
 <container>
 	
-	<I.Object bind:store={s} let:store let:value  test={testAttribute} >
-		<p>
-			{JSON.stringify(value, null, '\t')}
-			<button on:click={clear}>Clear</button>
-		</p>
-		<div>
-			<I.Text bind:store={t} name='test'>test</I.Text>
-			Input fields with `use:bind`
-			<input use:bind={[store, s => s.test]} />
-			<input use:bind={t} />
-			<I.Number name='min'>Minimum for the input below</I.Number>
-			<I.Number min={value.min} name='num'>Has min</I.Number>
-			<I.Text name='{$t}'>{$t}</I.Text>
-			<!-- <I.Text bind={[store, s => s[$t]]}>bind {$t}</I.Text> -->
+	<I.Object bind:store={s} let:store let:value  test={testAttribute} disabled={$s?.disableAll} >
+		<div style='flex-direction: row;'>
+			<label for='disableall'>Disable all</label>
+			<input id='disableall' type='checkbox' use:bind={[store, s => s.disableAll]} />
 		</div>
+		<split>
+			<div>
+				<div>
+					<I.Text bind:store={t} name='test'>test</I.Text>
+					Input fields with `use:bind`
+					<input use:bind={[store, s => s.test]} />
+					<input use:bind={t} />
+					<I.Number name='min'>Minimum for the input below</I.Number>
+					<I.Number min={value.min} name='num'>Has min</I.Number>
+					<I.Text name='{$t}'>{$t}</I.Text>
+					<!-- <I.Text bind={[store, s => s[$t]]}>bind {$t}</I.Text> -->
+				</div>
 
-		<div class='nested'>
-			<h4>Arrays!</h4>
-			<div style='flex-direction: row;'>
-				<label for='disabledArray'>Toggle disabled</label>
-				<input id='disabledArray' type='checkbox' use:bind={[store, s => s.disabledArray]} />
+				<div class='nested'>
+					<h4>Arrays!</h4>
+					<div style='flex-direction: row;'>
+						<label for='disabledArray'>Toggle disabled</label>
+						<input id='disabledArray' type='checkbox' use:bind={[store, s => s.disabledArray]} />
+					</div>
+					<I.Array name='array' let:store let:value let:attributes disabled={value.disableAll || value.disabledArray} value={[ { name: 'Lillemis', age: 5 } ]}>
+						{#each value as item, i}
+							<!-- <I.Text bind={[store, store => store[i].name]}>{item.name}</I.Text> -->
+							<I.Object name='{i}'>
+								<I.Text name='name'>Name</I.Text>
+								<I.Number name='age'>Age</I.Number>
+								<button disabled={attributes.disabled} on:click={() => store.removeByIndex(i)}>Remove {item.name}</button>
+							</I.Object> 
+						{/each}
+						<button disabled={attributes.disabled} on:click={() => store.push({})}>Add item</button>
+					</I.Array>
+				</div>
+				
+				<div class='nested'>
+					<h4>Nested</h4>
+					<I.Object name='nested'>
+						<I.Text name='str'>str</I.Text>
+						<I.Text name='str'>str</I.Text>
+					</I.Object>
+					<h4>Nested changed test attribute</h4>
+					<I.Object name='nested-changed' test='Changed the test attribute'>
+						<I.Text name='str'>str</I.Text>
+					</I.Object>
+				</div>
+
+				<I.Text name='outside' bind={[store, s => s.nested.inside.deep]}>
+					Outside of nested (but also inside using bind)
+				</I.Text>
+
+				<h4>Nested object using bind</h4>
+				<I.Object bind={[store, store => store.another.nested]}>
+					<I.Text name='some-text'>Some Text</I.Text>
+				</I.Object>
 			</div>
-			<I.Array name='array' let:store let:value disabled={value.disabledArray} value={[ { name: 'Lillemis', age: 5 } ]}>
-				{#each value as item, i}
-					<!-- <I.Text bind={[store, store => store[i].name]}>{item.name}</I.Text> -->
-					<I.Object name='{i}'>
-						<I.Text name='name'>Name</I.Text>
-						<I.Number name='age'>Age</I.Number>
-						<button on:click={() => store.removeByIndex(i)}>Remove {item.name}</button>
-					</I.Object> 
-				{/each}
-				<button on:click={() => store.push({})}>Add item</button>
-			</I.Array>
-		</div>
+			<p>
+				{JSON.stringify(value, null, '\t')}
+				<button on:click={clear}>Clear</button>
+			</p>
+		</split>
 		
-		<div class='nested'>
-			<h4>Nested</h4>
-			<I.Object name='nested'>
-				<I.Text name='str'>str</I.Text>
-				<I.Text name='str'>str</I.Text>
-			</I.Object>
-			<h4>Nested changed test attribute</h4>
-			<I.Object name='nested-changed' test='Changed the test attribute'>
-				<I.Text name='str'>str</I.Text>
-			</I.Object>
-		</div>
-
-		<I.Text name='outside' bind={[store, s => s.nested.inside.deep]}>
-			Outside of nested (but also inside using bind)
-		</I.Text>
-
-		<h4>Nested object using bind</h4>
-		<I.Object bind={[store, store => store.another.nested]}>
-			<I.Text name='some-text'>Some Text</I.Text>
-		</I.Object>
+		
 	</I.Object>
 
 	<div>
@@ -138,6 +149,12 @@
 </container>
 
 <style lang="scss">
+
+	split {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 20px;
+	}
 
 	div {
 		display: flex;

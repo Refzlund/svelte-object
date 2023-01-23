@@ -6,7 +6,6 @@
 
 	type T = $$Generic<Array<any>>
 	type K = $$Generic
-	type O = $$Generic<Record<String, any>>
 
 	type P = $$Generic<string>
 
@@ -15,8 +14,7 @@
 	export const store = valueStoreArray<T>((value || []) as T)
 	export let 
 		name: string | number | undefined = undefined,
-		bind: Bind<T, K> | undefined = undefined,
-		attributes: Record<any, any> | undefined = undefined
+		bind: Bind<T, K> | undefined = undefined
 
 	store.prechange = v => {
 		if(!v)
@@ -27,12 +25,13 @@
 	}
 	store.setName(name)
 
-	const obj = svelteObject<O>(store)
-	$: obj.$$restProps.set({...$$restProps, ...attributes} as any)
+	const obj = svelteObject(store)
+	$: obj.$$restProps.set($$restProps as any)
+	const attributes = obj.attributes
 
 	const updateBind = createBindFunction<T, K>(store)
 	$: updateBind(bind)
 	
 </script>
 
-<slot {store} value={$store || []}/>
+<slot {store} value={$store || []} attributes={$attributes}/>
