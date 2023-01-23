@@ -20,6 +20,7 @@ My goals are
 - Reduce unforseen bugs
 - Primary focus on Svelte stores as a reactive data pattern
 - Clear and concise component language
+- Simplify input validation
 
 ### Features
 - Allows for nested Objects and Arrays
@@ -28,6 +29,11 @@ My goals are
 - Trigger validation methods manually (will be recursive when used on Object or Array)
 - 'Rest Params' on Objects and Arrays cascades to children recursively as attributes
 - Custom `bind` utility function for components and `use:bind` for HTML-elements
+
+### Why stores?
+There are two big reasons:
+1. We cannot bind using `let:directive` - however generalizing the store pattern used in this library, we can!
+2. They're both easier and clearer to deal with and to debug
 
 ### Requirements
 Understanding [Svelte Stores](https://svelte.dev/tutorial/writable-stores), how to make [custom stores](https://svelte.dev/tutorial/custom-stores) and how to [derive a store](https://svelte.dev/tutorial/derived-stores) will prove to be important assets to maximizing the use of this library.
@@ -52,7 +58,7 @@ Because of svelte-object, the necessary key-value pairs will populate the releva
 	</I.Object>
 	<I.Array name='pets' let:store let:value>
 		{#each value as pet, i}
-			<I.Text bind={[store, store => store[i]]}> Name </I.Text>
+			<I.Text name='{i}'> Name </I.Text>
 			<button on:click={() => store.removeByIndex(i)}> Remove </button>
 		{/each}
 		<button on:click={() => store.push('Pet name')}> Add pet </button>
