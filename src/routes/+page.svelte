@@ -66,7 +66,7 @@
 
 
 <container>
-	
+	<I.Text bind={[s, s => s.text]}>Text</I.Text>
 	<I.Object bind:store={s} let:store let:value partial={{ nested: { str: 'Pre-defined value' } }} test={testAttribute} disabled={$s?.disableAll} >
 		<div style='flex-direction: row;'>
 			<label for='disableall'>Disable all</label>
