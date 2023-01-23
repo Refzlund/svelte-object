@@ -1,5 +1,5 @@
 import { Object, Array } from 'svelte-object'
-import Text from './TextInput.svelte'
+import Text from './Text.svelte'
 import Number from './Number.svelte'
 export { bind, type ValueStore } from 'svelte-object'
 

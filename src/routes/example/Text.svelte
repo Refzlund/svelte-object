@@ -1,6 +1,5 @@
 <script lang='ts'>
-	
-	import { valueStore, bind, Value, type ValueProps } from 'svelte-object'
+	import { valueStore, Value, type ValueProps } from 'svelte-object'
 
 	type T = string | undefined
 	type K = $$Generic

@@ -1,8 +1,7 @@
 <script lang='ts'>
 	import { createBindFunction } from 'svelte-object/utils/component-bind'
-	import type { Bind, StoreCallback } from 'svelte-object/utils/types'
+	import type { Bind } from 'svelte-object/utils/types'
 	import type { ValueStore } from 'svelte-object/value-store'
-	import type { Writable } from 'svelte/store'
 
 	type T = $$Generic
 	type K = $$Generic

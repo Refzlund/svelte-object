@@ -1,9 +1,8 @@
 <script lang='ts'>
-	import type { Writable } from 'svelte/store'
-	import { valueStore, type ValueStore } from 'svelte-object/value-store'
+	import { valueStore } from 'svelte-object/value-store'
 	import { createBindFunction } from 'svelte-object/utils/component-bind'
 	import { svelteObject } from 'svelte-object/utils/svelte-object'
-	import type { Bind, StoreCallback } from 'svelte-object/utils/types'
+	import type { Bind } from 'svelte-object/utils/types'
 
 	type T = $$Generic<Record<any, any>>
 	type K = $$Generic
