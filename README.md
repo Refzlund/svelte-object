@@ -29,11 +29,13 @@ My goals are
 - Trigger validation methods manually (will be recursive when used on Object or Array)
 - 'Rest Params' on Objects and Arrays cascades to children recursively as attributes
 - Custom `bind` utility function for components and `use:bind` for HTML-elements
+- Type-safe
 
 ### Why stores?
 There are two big reasons:
 1. We cannot bind using `let:directive` - however generalizing the store pattern used in this library, we can!
 2. They're both easier and clearer to deal with and to debug
+First of call, consider using `Typescript`. If you don't use `Typescript` you may ignore any type-related content that is not pure `Javascript`.
 
 ### Requirements
 Understanding [Svelte Stores](https://svelte.dev/tutorial/writable-stores), how to make [custom stores](https://svelte.dev/tutorial/custom-stores) and how to [derive a store](https://svelte.dev/tutorial/derived-stores) will prove to be important assets to maximizing the use of this library.
@@ -67,3 +69,52 @@ Because of svelte-object, the necessary key-value pairs will populate the releva
 ```
 
 ## Get Started
+First of call, consider using `Typescript`. If you don't use `Typescript` you may ignore any type-related content that is not pure `Javascript`.
+
+### Text.svelte
+A simple component for a string could look like this:
+```html
+<script lang='ts'>
+	import { bind, valueStore, Value, type ValueProps } from 'svelte-object'
+
+	// Indicates what type the store contains.
+	type T = string | undefined
+	
+	// Is a required generic type. It types the `bind` function that can be used in relation to the component.
+	type K = $$Generic
+
+	// This lists all attributes (props) available to this component. Notice it extends `ValueProps` which are the properties that belongs to the headless component "Value"
+	interface $$Props extends ValueProps<T, K> {
+		/** Initial value */
+		value?: T
+	}
+
+	export let value: T = undefined
+	export const store = valueStore<T>(value)
+
+	// Notice that `const store` is not included in $$Props.
+	// This is because we pass the store to the Value-component
+	// which takes care of typing that prop.
+</script>
+```
+
+Next up we create the markup for the `Text` component. This is extremely simple and bare-bone.
+
+If you want to see how to apply store validation and show error message, take a look at [this example](https://github.com/Refzlund/svelte-object/blob/master/src/routes/example/Text.svelte).
+
+```html
+<Value
+	{store}
+	{...$$restProps}
+	let:error
+	let:attributes
+>
+
+	<!-- Way one to bind -->
+	<input bind:store={$store}>
+
+	<!-- Way two to bind -->
+	<input use:bind={store}>
+
+</Value>
+```
