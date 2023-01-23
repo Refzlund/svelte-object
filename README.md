@@ -6,22 +6,28 @@ Keep in mind that this library does not provide input- or form components. It pr
 It is not limited to inputs and forms. There are many ways you could use this structure to create a responsive and engaging interface.
 
 ### Motivation
-Components can quickly become bloated with reactive declarations (`$:`). JSON objects are often duplicated in the script tag to define an object, and the component structure themselves. FormData objects are no fun to work with.
+Components can quickly become bloated with reactive declarations (`$:`). This is often a cause of bugs.
+
+JSON objects are often duplicated in the script tag to define an object, and the component structure themselves. This requires devs to make changes multiple places and repeat themselves.
+
+FormData objects are no fun to work with. They're not reactive and are mainly limited to forms.
 
 My goals are
 - Better developer experience
 - Higher dev throughput
 - Stores > Reactive components statements/declarations
-- Unified way to relate stores with components and HTML-tags (with `bind` and `use:bind`)
+- Unified way to relate stores through components and HTML-tags (by using `bind` and `use:bind`)
 - Reduce unforseen bugs
-- Reactive data
+- Primary focus on Svelte stores as a reactive data pattern
 - Clear and concise component language
 
 ### Features
+- Allows for nested Objects and Arrays
+	- Array stores have `.push` and `.removeByIndex`
 - Ease of development for input validation
 - Trigger validation methods manually (will be recursive when used on Object or Array)
-- 'Rest Params' on Objects and Arrays cascades to children recursively
-- Custom `bind` utility function for components and `use:directive` for HTML-elements
+- 'Rest Params' on Objects and Arrays cascades to children recursively as attributes
+- Custom `bind` utility function for components and `use:bind` for HTML-elements
 
 ### Requirements
 Understanding [Svelte Stores](https://svelte.dev/tutorial/writable-stores), how to make [custom stores](https://svelte.dev/tutorial/custom-stores) and how to [derive a store](https://svelte.dev/tutorial/derived-stores) will prove to be important assets to maximizing the use of this library.
