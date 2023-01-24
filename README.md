@@ -22,7 +22,6 @@ It is not limited to inputs and forms. There are many ways you could use this st
 There are two big reasons:
 1. We cannot bind using `let:directive` - however generalizing the store pattern used in this library, we can!
 2. They're both easier and clearer to deal with and to debug
-First of call, consider using `Typescript`. If you don't use `Typescript` you may ignore any type-related content that is not pure `Javascript`.
 
 ### Requirements
 Understanding [Svelte Stores](https://svelte.dev/tutorial/writable-stores), how to make [custom stores](https://svelte.dev/tutorial/custom-stores) and how to [derive a store](https://svelte.dev/tutorial/derived-stores) will prove to be important assets to maximizing the use of this library.
