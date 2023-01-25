@@ -1,8 +1,10 @@
 import { valueStore, type ValueStore } from '../value-store'
 
+type PartialOrT<T> = [T] extends [object] ? Partial<T> : T
+
 type InferArray<T extends Array<any>> = T extends Array<infer K> ? K : never
 type ValueStoreArray<T extends Array<any>> = ValueStore<T> & {
-	push(item: Partial<InferArray<T>>): number
+	push(item: PartialOrT<InferArray<T>>): number
 	removeByIndex(i: number): InferArray<T> | undefined
 }
 
@@ -26,6 +28,7 @@ export default function valueStoreArray<T extends Array<any>>(initialValue: T): 
 			item = v[i]
 			return [...v.slice(0, i), ...v.slice(i + 1)] as T
 		})
+		
 		return item
 	}
 	

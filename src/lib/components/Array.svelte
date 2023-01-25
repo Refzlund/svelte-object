@@ -5,7 +5,7 @@
 	import type { Bind } from '$lib/utils/types'
 	import valueStoreArray from '$lib/utils/value-store-array'
 
-	type T = $$Generic<Array<any>>
+	type T = $$Generic<Array<unknown>>
 	type K = $$Generic
 
 	type P = $$Generic<string>

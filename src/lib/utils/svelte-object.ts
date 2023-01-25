@@ -68,10 +68,15 @@ export function svelteObject(store: ValueStore<Record<any, any>>): SvelteObject 
 				})
 			})
 			const objectUnsub = store.subscribe(v => {
+				if (Array.isArray(v)) {
+					if (Number(incoming.name) >= v.length)
+						return
+				}
 				if (typeof get(incoming) === 'object') {
 					recursive = true
 					tick().then(v => recursive = false)
 				}
+				
 				incoming.set(v?.[incoming.name as string])
 			})
 
