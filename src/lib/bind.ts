@@ -4,7 +4,9 @@ import type { Bind } from './utils/types'
 export function bind<T, K>(node: HTMLInputElement, item: Bind<T, K> | undefined) {
 	let destroy: (() => void) | undefined = undefined
 	function init(item: Bind<T, K> | undefined) {
-		if (!item && !item?.[0])
+		if (!item)
+			return
+		if (!('subscribe' in item) && !item?.[0])
 			return
 		const { setValue, getValue, store } = storeValue<T, K>(item)
 
