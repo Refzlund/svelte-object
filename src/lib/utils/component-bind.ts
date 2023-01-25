@@ -40,7 +40,7 @@ export function createBindFunction<T, K>(store: Writable<any> & { reset?: Functi
 			unsub()
 			unsubs = []
 		}
-		if (!item || !item?.[0])
+		if (!item && !item?.[0])
 			return
 		
 		const { getValue, setValue, store: bindStore, fn } = storeValue(item)
