@@ -1,6 +1,6 @@
 {
 	"name": "svelte-object",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"scripts": {
 		"dev": "vite dev --port 5222",
 		"package": "svelte-package",
