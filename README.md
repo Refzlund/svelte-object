@@ -9,23 +9,6 @@ Keep in mind that this library does not provide input- or form components. It pr
 
 It is not limited to inputs and forms. There are many ways you could use this structure to create a responsive and engaging interface.
 
-### Motivation
-Components can quickly become bloated with reactive declarations (`$:`). This often causes unforseen bugs.
-
-JSON objects are often duplicated in the script tag to define an object, and the component structure themselves. This requires devs to make changes multiple places and repeat themselves.
-
-FormData objects are no fun to work with. They're not reactive and are mainly limited to forms.
-
-My goals are
-- Better developer experience
-- Higher dev throughput
-- Stores > Reactive components' statements/declarations
-- Unified way to relate stores through components and HTML-tags (by using `bind` and `use:bind`)
-- Reduce unforseen bugs
-- Primary focus on Svelte stores as a reactive data pattern
-- Clear and concise component language
-- Simplify input validation
-
 ### Features
 - Allows for nested Objects and Arrays
 	- Array stores have `.push` and `.removeByIndex`
@@ -39,7 +22,6 @@ My goals are
 There are two big reasons:
 1. We cannot bind using `let:directive` - however generalizing the store pattern used in this library, we can!
 2. They're both easier and clearer to deal with and to debug
-First of call, consider using `Typescript`. If you don't use `Typescript` you may ignore any type-related content that is not pure `Javascript`.
 
 ### Requirements
 Understanding [Svelte Stores](https://svelte.dev/tutorial/writable-stores), how to make [custom stores](https://svelte.dev/tutorial/custom-stores) and how to [derive a store](https://svelte.dev/tutorial/derived-stores) will prove to be important assets to maximizing the use of this library.
