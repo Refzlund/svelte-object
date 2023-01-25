@@ -1,7 +1,7 @@
 import type { Writable } from 'svelte/store'
 
 
-export type StoreCallback<T, K> = (s: K) => T
+export type StoreCallback<T, K> = (s: [K] extends [object] ? K : Record<any, any>) => T
 
 /**
  * ### `K` A component generic that identifies the incoming store

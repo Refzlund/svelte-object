@@ -10,11 +10,20 @@ export function bind<T, K>(node: HTMLInputElement, item: Bind<T, K> | undefined)
 			return
 		const { setValue, getValue, store } = storeValue<T, K>(item)
 
-		const initial = getValue()
-		if (initial)
-			node.value = initial
-
 		const check = node.type === 'checkbox' || node.type === 'radio'
+
+		const initial = getValue()
+		if (typeof initial !== 'undefined') {
+			if(check)
+				node.checked = initial
+			else
+				node.value = initial
+		}
+		else if (check)
+			setValue(node.checked as any)
+		else if (node.value)
+			setValue(node.value as any)
+		
 		const unsub = store.subscribe(v => {
 			node.value = getValue() || (check ? false : '')
 		})
