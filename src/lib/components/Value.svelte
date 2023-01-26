@@ -9,7 +9,6 @@
 	interface $$Props {
 		store: ValueStore<T>
 		name?: string | number
-		disabled?: boolean
 		bind?: Bind<T, K>
 	}
 
