@@ -1,7 +1,7 @@
 import { storeValue } from './utils/store-value'
 import type { Bind } from './utils/types'
 
-export function bind<T, K>(node: HTMLInputElement, item: Bind<T, K> | undefined) {
+export function bind<T, K>(node: HTMLInputElement | HTMLDivElement, item: Bind<T, K> | undefined) {
 	let destroy: (() => void) | undefined = undefined
 	function init(item: Bind<T, K> | undefined) {
 		if (!item)
@@ -10,27 +10,28 @@ export function bind<T, K>(node: HTMLInputElement, item: Bind<T, K> | undefined)
 			return
 		const { setValue, getValue, store } = storeValue<T, K>(item)
 
-		const check = node.type === 'checkbox' || node.type === 'radio'
-		const contentEditable = node.tagName.toLowerCase() === 'div'
-		if (contentEditable)
+		const div = !('value' in node && 'checked' in node && 'type' in node)
+		const check = !div && (node.type === 'checkbox' || node.type === 'radio')
+
+		if (div)
 			node.contentEditable = 'true'
 
 		const initial = getValue()
-		if (typeof initial !== 'undefined') {
+		if (div)
+			setValue(node.textContent as any)
+		else if (typeof initial !== 'undefined') {
 			if(check)
 				node.checked = initial
 			else
 				node.value = initial
 		}
-		else if (contentEditable)
-			setValue(node.textContent as any)
 		else if (check)
 			setValue(node.checked as any)
 		else if (node.value)
 			setValue(node.value as any)
 		
 		const unsub = store.subscribe(v => {
-			if (contentEditable) {
+			if (div) {
 				node.textContent = getValue()
 				return
 			}
@@ -38,7 +39,7 @@ export function bind<T, K>(node: HTMLInputElement, item: Bind<T, K> | undefined)
 		})
 
 		function getNodeValue(): unknown {
-			if (contentEditable)
+			if (div)
 				return node.textContent
 			if (check)
 				return node.checked
