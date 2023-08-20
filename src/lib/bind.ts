@@ -11,6 +11,9 @@ export function bind<T, K>(node: HTMLInputElement, item: Bind<T, K> | undefined)
 		const { setValue, getValue, store } = storeValue<T, K>(item)
 
 		const check = node.type === 'checkbox' || node.type === 'radio'
+		const contentEditable = node.tagName.toLowerCase() === 'div'
+		if (contentEditable)
+			node.contentEditable = 'true'
 
 		const initial = getValue()
 		if (typeof initial !== 'undefined') {
@@ -19,17 +22,31 @@ export function bind<T, K>(node: HTMLInputElement, item: Bind<T, K> | undefined)
 			else
 				node.value = initial
 		}
+		else if (contentEditable)
+			setValue(node.textContent as any)
 		else if (check)
 			setValue(node.checked as any)
 		else if (node.value)
 			setValue(node.value as any)
 		
 		const unsub = store.subscribe(v => {
+			if (contentEditable) {
+				node.textContent = getValue()
+				return
+			}
 			node.value = getValue() || (check ? false : '')
 		})
 
+		function getNodeValue(): unknown {
+			if (contentEditable)
+				return node.textContent
+			if (check)
+				return node.checked
+			return node.value
+		}
+
 		function update() {
-			setValue((check ? node.checked : node.value) as any)
+			setValue(getNodeValue() as any)
 		}
 
 		node.addEventListener('input', update)
