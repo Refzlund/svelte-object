@@ -19,7 +19,7 @@ Literal wizardry!🧙‍♂️
 
 `Array`'s store has `.push(item: unknown)` and `.removeByIndex(i: number)` reactive functions
 
-See [Svelte REPL]()
+See [Svelte REPL](https://svelte.dev/repl/9479243a20784b3ca47e47760bcb35f4?version=4.2.0)
 
 ```html
 <script lang='ts'>
@@ -108,7 +108,7 @@ Components you write<sup><a href='./component-composition.md'>component composit
 
 `.setName(name: string)`, which when provided, will bind to the nearest parent object/array through `getContext('svelte-object')`.
 
-`.onValidate({trigger: { blur, change }, error, warning, value} => ...)` for custom validation; accepts a callback that returns void, an `error(...)` or `warning(...)`
+`.onValidate(({trigger: { blur, change }, error, warning, value}) => ...)` for custom validation; accepts a callback that returns void, an `error(...)` or `warning(...)`
 
 These are captured in stores, e.g. `.error: Writable<...>`, `.warning: Writable<...>`
 
