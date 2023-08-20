@@ -33,7 +33,7 @@ This could be your code <sup><a href=''>See REPL</a></sup>
 
 <br>
 
-> [!INFO]  
+> [!NOTE]  
 > And don't forget about all the other features! 
 
 <br>
