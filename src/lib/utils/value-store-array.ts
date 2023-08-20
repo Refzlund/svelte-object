@@ -1,10 +1,12 @@
 import { valueStore, type ValueStore } from '../value-store'
+import type { InferArray } from './types'
 
 type PartialOrT<T> = [T] extends [object] ? Partial<T> : T
 
-type InferArray<T extends Array<any>> = T extends Array<infer K> ? K : never
 type ValueStoreArray<T extends Array<any>> = ValueStore<T> & {
 	push(item: PartialOrT<InferArray<T>>): number
+	
+	/** Returns the item that has been removed */
 	removeByIndex(i: number): InferArray<T> | undefined
 }
 

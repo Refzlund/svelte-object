@@ -61,6 +61,8 @@
 	})
 
 	const clear = () => s.set({} as ValueStoreContent<typeof s>)
+
+	const arrFn = (arr: unknown[]) => {}
 </script>
 
 <h1>{$s?.test}</h1>
@@ -69,8 +71,6 @@
 <I.Text bind={[s, s => s.contentEditable]}>contentEditable</I.Text>
 
 <container>
-
-	
 	
 	<I.Text bind={[s, s => s.text]}>Text</I.Text>
 	<I.Object bind:store={s} let:store let:value partial={{ nested: { str: 'Pre-defined value' } }} test={testAttribute} disabled={$s?.disableAll} >
@@ -103,6 +103,7 @@
 						<input id='disabledArray' type='checkbox' use:bind={[store, s => s.disabledArray]} />
 					</div>
 					<I.Array name='array' let:store let:value let:attributes disabled={value.disableAll || value.disabledArray} value={[ { name: 'Lillemis', age: 5 } ]}>
+						{arrFn(value)}
 						{#each value as item, i}
 							<h4>bind</h4>
 							<I.Text bind={[store, store => store[i].name]}>{item.name}</I.Text>
@@ -110,10 +111,10 @@
 							<I.Object name='{i}'>
 								<I.Text name='name'>Name</I.Text>
 								<I.Number name='age'>Age</I.Number>
-								<button disabled={attributes.disabled} on:click={() => store.removeByIndex(i)}>Remove {item.name}</button>
+								<button disabled={attributes.disabled} on:click={() => value.removeByIndex(i)}>Remove {item.name}</button>
 							</I.Object> 
 						{/each}
-						<button disabled={attributes.disabled} on:click={() => store.push({})}>Add item</button>
+						<button disabled={attributes.disabled} on:click={() => value.push({})}>Add item</button>
 					</I.Array>
 				</div>
 				
