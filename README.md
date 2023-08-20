@@ -1,5 +1,5 @@
 <br>
-<div align='center'><img src='https://github.com/Refzlund/svelte-object/blob/master/logo.png' width=500></img></div>
+<div align='center'><a href='https://github.com/Refzlund/svelte-object'><img src='https://github.com/Refzlund/svelte-object/blob/master/logo.png' width=500></img></a></div>
 <br>
 
 👉   Define objects in your markup-structure!  
@@ -14,10 +14,39 @@
 <br>
 <br>
 
+This could be your code <sup><a href=''>See REPL</a></sup>
+
+```html
+<h3> An array of pets </h3>
+
+<Array name='pets' let:value>
+	{#each value as item, k}
+		<Object name={k}>
+			<Input name='name'>Pets name</Input>
+			<Input name='age' type='number'>Pets age</Input>
+		</Object>
+		<button on:click={() => value.removeByIndex(k)}> Remove {item.name} 
+	{/each}
+	<button on:click={() => value.push({})}> Add pet </button>
+</Array>
+```
+
+<br>
+
+> [!INFO]  
+> And don't forget about all the other features! 
+
+<br>
+<br>
+<br>
+<br>
+
+
+
 #### Minimal featured example
 [svelte-object](https://github.com/refzlund/svelte-object) makes it easy to bind inputs or your own components, either by `name` or `bind` attribute!
 
-`Array`'s store has `.push(item: unknown)` and `.removeByIndex(i: number)` reactive functions
+Array has been *proxified* to update its store when using its mutatable function.
 
 See [Svelte REPL](https://svelte.dev/repl/9479243a20784b3ca47e47760bcb35f4?version=4.2.0)
 
