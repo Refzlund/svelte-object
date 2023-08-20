@@ -1,3 +1,11 @@
+<script context='module' lang='ts'>
+	export type SvelteArray<T extends unknown = unknown> = T[] & { 
+		/** Returns the item that has been removed */
+		removeByIndex(i: number): T
+		push(item: Partial<T>): number
+	}
+</script>
+
 <script lang='ts'>
 	import { createBindFunction } from '$lib/utils/component-bind'
 	import onValidate from '$lib/utils/object-onValidate'
@@ -7,11 +15,6 @@
 
 	type T = $$Generic<Array<unknown>>
 	type O = InferArray<T>
-	type SvelteArray<T extends unknown> = T[] & { 
-		/** Returns the item that has been removed */
-		removeByIndex(i: number): T
-		push(item: Partial<T>): number
-	}
 	type K = $$Generic
 	type P = $$Generic<string>
 

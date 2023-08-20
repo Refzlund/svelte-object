@@ -4,6 +4,8 @@ export { valueStore } from './value-store'
 export { default as Object } from './components/Object.svelte'
 export { default as Array } from './components/Array.svelte'
 
+export type { SvelteArray } from './components/Array.svelte'
+
 import type { ComponentProps } from 'svelte'
 import Value from './components/Value.svelte'
 
