@@ -46,6 +46,19 @@ export function storeValue<T, K>(item: Bind<T, K>) {
 				return v
 			for (let key of keys) {
 				if (!obj[key]) {
+					if (Array.isArray(obj)) {
+						/* 
+							We do not intialize the key for array items
+							as the item has to "exist" within the array
+							regardless.
+	
+							If we were to initialize the key for an array item,
+							it would result in buggy-behaviour when trying to
+							remove this item.
+						*/
+						return v
+					}
+
 					obj[key] = {}
 				}
 				obj = obj[key]
