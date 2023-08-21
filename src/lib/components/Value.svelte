@@ -26,7 +26,7 @@
 		warning = store.warning,
 		attributes = store.parent?.attributes
 
-	const updateBind = createBindFunction<T, K>(store)
+	const updateBind = createBindFunction<T>(store)
 	$: updateBind(bind)
 
 </script>
