@@ -28,12 +28,12 @@ import type { Bind, StoreCallback } from './types'
  * <Component bind={[store, store => store.nested.item]} />
  * ```
 */
-export function createBindFunction<T, K>(store: Writable<any> & { reset?: Function }) {
+export function createBindFunction<T>(store: Writable<any> & { reset?: Function }) {
 	let unsubs: (() => void)[] = []
 
-	let lastItem: Bind<T, K> | undefined
-	let lastFn: StoreCallback<T, K> | undefined
-	function updateBind(item: Bind<T, K> | undefined) {
+	let lastItem: Bind<T, any> | undefined
+	let lastFn: StoreCallback<T, any> | undefined
+	function updateBind<K>(item: Bind<T, K> | undefined) {
 		if (item === lastItem)
 			return
 		for (let unsub of unsubs) {
@@ -46,12 +46,13 @@ export function createBindFunction<T, K>(store: Writable<any> & { reset?: Functi
 			return
 		
 		const { getValue, setValue, store: bindStore, fn } = storeValue(item)
+		
 		/**
-		 * This is check in the case of  `<Component bind={[store, s => s[$someString]]}>`
+		 * This is checking in the case of  `<Component bind={[store, s => s[$someString]]}>`
 		 * 
 		 * That binding doesn't work (as of now) - and would otherwise crash the site.
 		*/
-		if (fn?.toString() == lastFn?.toString())
+		if (fn && fn?.toString() == lastFn?.toString())
 			return
 
 		lastFn = fn
