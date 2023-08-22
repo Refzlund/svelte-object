@@ -5,6 +5,9 @@ export { default as Object } from './components/Object.svelte'
 export { default as Array } from './components/Array.svelte'
 
 export type { SvelteArray } from './components/Array.svelte'
+export type { ObjectStore } from './utils/object-store'
+
+export { proxifyArray } from './utils/proxify-array'
 
 import type { ComponentProps } from 'svelte'
 import Value from './components/Value.svelte'
