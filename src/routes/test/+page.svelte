@@ -23,18 +23,38 @@
 </div>
 
 
-<div>
-	<I.Object bind:store let:store test='123'>
-		<!-- <I.Text bind:store>A</I.Text>
-		<I.Text bind={store}>A</I.Text> -->
 
-		<input use:store={'test'} />
-		<I.Object let:store bind:store={nested} bind={[store, store => store.nested.deep]}>
-			<input use:store={'test'} />
-			<I.Text name='some-text'>Some Text</I.Text>
-			<p>{JSON.stringify($nested, null, '\t')}</p>
-		</I.Object> 
+
+
+
+<div>
+
+	
+
+	<I.Object bind:store let:store test='123'>
+		
+		<input use:store={'property'} />
+		<I.Array let:store let:value name='array'>
+
+			{#each value as item, k}
+				<input use:store={k} />
+				<I.Text name='{k}'></I.Text>
+			{/each}
+			<button on:click={() => value.push('')}>Add</button>
+
+		</I.Array>
+
 	</I.Object>
+
+	<input use:bind={[store, s => s.array[2]]} />
+
+	<hr>
+	<hr>
+
+	<I.Object bind={store} let:store>
+		<input use:store={'property'} />
+	</I.Object>
+
 </div>
 
 <p>{JSON.stringify($store, null, '\t')}</p>

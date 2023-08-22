@@ -72,7 +72,7 @@
 
 	store.onValidate = onValidate(obj)
 
-	const updateBind = createBindFunction<T, K>(store)
+	const updateBind = createBindFunction<T>(store)
 	$: updateBind(bind as any)
 	
 </script>
