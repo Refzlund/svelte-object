@@ -20,7 +20,7 @@
 	const v = {
 		required: {
 			isInvalid: (value: T) => required && (!value || value.length === 0),
-			message: () => `${store.name || 'This input'} is required` as const
+			message: () => `${store.propertyName || 'This input'} is required` as const
 		},
 		min: {
 			isInvalid: (value: T) => min > 0 && (value?.length || 0) !== 0 && (value?.length || 0) < min,

@@ -69,7 +69,7 @@ export type ValueStore<T> = Readonly<{
 	/** Returns `true` if valid */
 	validate(trigger?: keyof ValidationTrigger | 'forced', value?: T): boolean
 	setName(name: string | number | undefined): void
-	name?: string | number 
+	propertyName?: string | number 
 	error: Writable<undefined | { message: string, show?: (value: T) => boolean, update?: (value: T) => string }>
 	warning: Writable<undefined | { message: string, show?: (value: T) => boolean, update?: (value: T) => string }>
 	parent?: SvelteObject
@@ -111,10 +111,10 @@ export function valueStore<T>(initialValue: T): ValueStore<T> {
 			store.warning.set(undefined)
 		},
 		subscribe: svelteStore.subscribe,
-		name: undefined,
+		propertyName: undefined,
 		setName(name) {
 			// @ts-expect-error
-			store.name = name
+			store.propertyName = name
 			obj?.addValueStore(store)
 		},
 		validate(trigger = 'forced', value) {

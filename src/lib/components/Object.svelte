@@ -1,7 +1,10 @@
 <script lang='ts'>
-	import { valueStore } from '$lib/value-store'
+	import { createObjectStore } from 'svelte-object/utils/object-store'
+
+	import { valueStore, type ValueStore } from '$lib/value-store'
 	import { createBindFunction } from '$lib/utils/component-bind'
 	import { svelteObject } from '$lib/utils/svelte-object'
+	import { bind as bindUtility } from 'svelte-object/bind'
 	import type { Bind, RecursivePartial } from '$lib/utils/types'
 	import onValidate from '$lib/utils/object-onValidate'
 
@@ -14,7 +17,7 @@
 	export let value: T | undefined = undefined
 	/** Initial value (value property is prioritized over this) */
 	export let partial: RecursivePartial<T> | undefined = undefined
-	export const store = valueStore<T>((value || partial || {}) as T)
+	export const store = createObjectStore(valueStore<T>((value || partial || {}) as T))
 	export let 
 		name: string | number | undefined = undefined,
 		bind: Bind<T, K> | undefined = undefined
@@ -34,9 +37,9 @@
 
 	store.onValidate = onValidate(obj)
 
-	const updateBind = createBindFunction<T, K>(store)
+	const updateBind = createBindFunction<T>(store)
 	$: updateBind(bind)
-	
+
 </script>
 
 <slot {store} value={$store} attributes={$attributes}/>

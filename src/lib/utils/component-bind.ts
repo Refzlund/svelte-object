@@ -2,6 +2,7 @@ import type { Writable } from 'svelte/store'
 import { storeValue } from './store-value'
 import { onDestroy } from 'svelte'
 import type { Bind, StoreCallback } from './types'
+import type { ValueStore } from 'svelte-object/value-store'
 
 /**
  * ### Usage - Component Internals
@@ -28,7 +29,7 @@ import type { Bind, StoreCallback } from './types'
  * <Component bind={[store, store => store.nested.item]} />
  * ```
 */
-export function createBindFunction<T>(store: Writable<any> & { reset?: Function }) {
+export function createBindFunction<T>(store: ValueStore<any> & { reset?: Function }) {
 	let unsubs: (() => void)[] = []
 
 	let lastItem: Bind<T, any> | undefined
@@ -36,10 +37,6 @@ export function createBindFunction<T>(store: Writable<any> & { reset?: Function 
 	function updateBind<K>(item: Bind<T, K> | undefined) {
 		if (item === lastItem)
 			return
-		for (let unsub of unsubs) {
-			unsub()
-			unsubs = []
-		}
 		if (!item)
 			return
 		if (!('subscribe' in item) && !item?.[0])
@@ -55,10 +52,19 @@ export function createBindFunction<T>(store: Writable<any> & { reset?: Function 
 		if (fn && fn?.toString() == lastFn?.toString())
 			return
 
+		for (let unsub of unsubs) {
+			unsub()
+			unsubs = []
+		}
+
 		lastFn = fn
 		lastItem = item
 
-		store.set(getValue())
+		const parentValue = getValue()
+		const startValue = typeof parentValue === 'undefined' ? store.initialValue : parentValue
+		store.reset(startValue)
+		setValue(startValue)
+
 		let recursive = false
 		const bindUnsub = bindStore.subscribe(v => {
 			const value = getValue()
