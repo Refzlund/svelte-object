@@ -1,22 +1,68 @@
 <script lang='ts'>
+	import { get, writable } from 'svelte/store'
+
 	
 	import I, { bind, type ValueStore } from '../example'
+	import { onMount } from 'svelte'
 	const t = [{ a: 'yas', b: 123 }] as { a: string, b: number }[]
 	
 	let store
+	let nested
+
+	let s = writable()
+
+	onMount(() => {
+		// store.subscribe(v => console.log(v))
+	})
 
 </script>
 
 
+<div>
+	<input use:bind={s} /> {$s}
+</div>
 
 
-<I.Object partial={{}}>
-	<I.Text bind:store>A</I.Text>
-	<I.Text bind={store}>A</I.Text>
-</I.Object>
+
+
+<div>
+
+	
+
+	<I.Object bind:store let:store test='123'>
+		
+		<input use:store={'property'} />
+		<I.Array let:store let:value name='array'>
+
+			{#each value as item, k}
+				<input use:store={k} />
+				<I.Text name='{k}'></I.Text>
+			{/each}
+			<button on:click={() => value.push('')}>Add</button>
+
+		</I.Array>
+
+	</I.Object>
+
+	<input use:bind={[store, s => s.array[2]]} />
+
+	<hr>
+	<hr>
+
+	<I.Object bind={store} let:store>
+		<input use:store={'property'} />
+	</I.Object>
+
+</div>
+
+<p>{JSON.stringify($store, null, '\t')}</p>
 
 
 <style>
+
+	p {
+		white-space: pre-wrap;
+	}
 
 	div {
 		display: flex;

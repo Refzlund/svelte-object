@@ -3,6 +3,7 @@ import type { ValueStore } from '../value-store'
 import { get, writable, type Unsubscriber, type Writable } from 'svelte/store'
 
 export type SvelteObject = Readonly<{
+	store: ValueStore<Record<any, any>>
 	stores: ValueStore<any>[]
 	/** These are the attributes passed to this object which cascades to child Objects and Arrays*/
 	$$restProps: Writable<Record<any, any>>
@@ -34,15 +35,16 @@ export function svelteObject(store: ValueStore<Record<any, any>>): SvelteObject 
 	}
 
 	const obj: SvelteObject = {
+		store,
 		stores: [],
 		$$restProps: $$restProps,
 		attributes: { subscribe: attributes.subscribe },
 		addValueStore(incoming: ValueStore<any>) {
 			obj.removeValueStore(incoming)
-			if (typeof incoming.name === 'undefined')
+			if (typeof incoming.propertyName === 'undefined')
 				return
 
-			const existing = get<any>(store)[incoming.name]
+			const existing = get<any>(store)[incoming.propertyName]
 			const types = {
 				existing: typeof existing,
 				incoming: typeof get(incoming)
@@ -63,13 +65,13 @@ export function svelteObject(store: ValueStore<Record<any, any>>): SvelteObject 
 				if (recursive)
 					return
 				store.update(obj => {
-					obj[incoming.name as string] = v
+					obj[incoming.propertyName as string] = v
 					return obj
 				})
 			})
 			const objectUnsub = store.subscribe(v => {
 				if (Array.isArray(v)) {
-					if (Number(incoming.name) >= v.length)
+					if (Number(incoming.propertyName) >= v.length)
 						return
 				}
 				if (typeof get(incoming) === 'object') {
@@ -77,7 +79,7 @@ export function svelteObject(store: ValueStore<Record<any, any>>): SvelteObject 
 					tick().then(v => recursive = false)
 				}
 				
-				incoming.set(v?.[incoming.name as string])
+				incoming.set(v?.[incoming.propertyName as string])
 			})
 
 			obj.stores.push(incoming)

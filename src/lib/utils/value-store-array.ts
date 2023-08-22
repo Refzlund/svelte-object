@@ -1,9 +1,12 @@
+import { get } from 'svelte/store'
 import { valueStore, type ValueStore } from '../value-store'
+import { createObjectStore, type ObjectStore } from './object-store'
+import { proxifyArray } from './proxify-array'
 import type { InferArray } from './types'
 
 type PartialOrT<T> = [T] extends [object] ? Partial<T> : T
 
-type ValueStoreArray<T extends Array<any>> = ValueStore<T> & {
+export type ValueStoreArray<T extends Array<any>> = ObjectStore<T> & {
 	push(item: PartialOrT<InferArray<T>>): number
 	
 	/** Returns the item that has been removed */
@@ -11,7 +14,8 @@ type ValueStoreArray<T extends Array<any>> = ValueStore<T> & {
 }
 
 export default function valueStoreArray<T extends Array<any>>(initialValue: T): ValueStoreArray<T> {
-	const store = valueStore(initialValue) as ValueStoreArray<T>
+	const store = createObjectStore(valueStore(initialValue)) as ValueStoreArray<T> 
+	proxifyArray(store, get(store))
 
 	store.push = function push(item) {
 		let length = -1

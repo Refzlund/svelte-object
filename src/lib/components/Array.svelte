@@ -7,6 +7,8 @@
 </script>
 
 <script lang='ts'>
+	import { proxifyArray } from 'svelte-object/utils/proxify-array'
+
 	import { createBindFunction } from '$lib/utils/component-bind'
 	import onValidate from '$lib/utils/object-onValidate'
 	import { svelteObject } from '$lib/utils/svelte-object'
@@ -19,49 +21,27 @@
 	type P = $$Generic<string>
 
 	
-	const proxiedArray = Symbol('svelte-array')
-	function proxyUpdate(v: SvelteArray<O>, ...keys: string[]) {
-		if(!v || v[proxiedArray])
-			return v as SvelteArray<O>
-		v[proxiedArray] = true
-		v.removeByIndex = (index: number) => store.removeByIndex(index) as InferArray<T>
-		for(const key of keys) {
-			const fn = v[key]
-			v[key] = function(...args: unknown[]) {
-				const result = fn.call(v, ...args)
-				store.update()
-				return result
-			}
-		}
-		return v as SvelteArray<O>
-	}
-
-	function proxify (v: SvelteArray<O> | undefined | T | never[]) {
-		return proxyUpdate(
-			v as SvelteArray<O>, 
-			'push', 'pop', 'shift', 'unshift', 'splice', 'reverse', 'sort', 'fill', 'copyWithin', 'flat'
-		)
-	}
+	
 
 
 	/** Initial value */
 	export let value: T | undefined = undefined
-	export const store = valueStoreArray<SvelteArray<O>>(proxify(value || []))
+	export const store = valueStoreArray<SvelteArray<O>>(value || [] as any)
+	
 	export let 
 		name: string | number | undefined = undefined,
 		bind: Bind<SvelteArray<O>, K> | undefined = undefined
 
-
 	store.prechange = v => {
 		if(!v) {
 			let arr = [] as unknown[] as SvelteArray<O>
-			proxify(arr)
+			proxifyArray(store, arr)
 			return arr
 		}
 		if(typeof v !== 'object')
 			v = $store
 
-		proxify(v)
+		proxifyArray(store, v)
 		return v
 	}
 	store.setName(name)
@@ -72,7 +52,7 @@
 
 	store.onValidate = onValidate(obj)
 
-	const updateBind = createBindFunction<T, K>(store)
+	const updateBind = createBindFunction<T>(store)
 	$: updateBind(bind as any)
 	
 </script>
