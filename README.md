@@ -14,7 +14,7 @@
 <br>
 <br>
 
-This could be your code <sup><a href=''>See REPL</a></sup>
+This could be your code <sup><a href='https://svelte.dev/repl/a750718bed5a4a0eac9085b90b1adc3e?version=4.2.0'>See REPL</a></sup>
 
 ```html
 <h3> An array of pets </h3>
