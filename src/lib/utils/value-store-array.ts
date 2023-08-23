@@ -30,9 +30,9 @@ export default function valueStoreArray<T extends Array<any>>(initialValue: T): 
 	store.removeByIndex = function removeByIndex(i) {
 		let item: InferArray<T> | undefined
 		store.update(v => {
-			v ??= [] as InferArray<T>
-			item = v[i]
-			return [...v.slice(0, i), ...v.slice(i + 1)] as T
+			v ??= proxifyArray(store, []) as InferArray<T>
+			item = v.splice(i, 1)[0]
+			return v as T
 		})
 		
 		return item
