@@ -30,7 +30,8 @@
 	
 	export let 
 		name: string | number | undefined = undefined,
-		bind: Bind<SvelteArray<O>, K> | undefined = undefined
+		bind: Bind<SvelteArray<O>, K> | undefined = undefined,
+		id: string | undefined = undefined
 
 	store.prechange = v => {
 		if(!v) {
@@ -49,6 +50,8 @@
 	const obj = svelteObject(store as any)
 	$: obj.$$restProps.set($$restProps as any)
 	const attributes = obj.attributes
+
+	$: obj.setId(id)
 
 	store.onValidate = onValidate(obj)
 

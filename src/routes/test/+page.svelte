@@ -27,7 +27,17 @@
 
 <div>
 
-	
+	<I.Object id='some-id' let:value>
+		<I.Object name='nested'>
+			<I.Text parent='some-id' name='property' />
+		</I.Object>
+
+		<I.Object bind='some-id'>
+			<I.Text name='property' /> <!-- Will be the same property as above component -->
+		</I.Object>
+
+		<p>{JSON.stringify(value, null, '\t')}</p>
+	</I.Object>
 
 	<I.Object bind:store let:store test='123'>
 		

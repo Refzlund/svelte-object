@@ -3,6 +3,7 @@ import { storeValue } from './store-value'
 import { onDestroy } from 'svelte'
 import type { Bind, StoreCallback } from './types'
 import type { ValueStore } from 'svelte-object/value-store'
+import { assertIsWritable, objectFromId } from './svelte-object'
 
 /**
  * ### Usage - Component Internals
@@ -39,6 +40,7 @@ export function createBindFunction<T>(store: ValueStore<any> & { reset?: Functio
 			return
 		if (!item)
 			return
+		item = objectFromId(item)
 		if (!('subscribe' in item) && !item?.[0])
 			return
 		
@@ -66,6 +68,7 @@ export function createBindFunction<T>(store: ValueStore<any> & { reset?: Functio
 		setValue(startValue)
 
 		let recursive = false
+		
 		const bindUnsub = bindStore.subscribe(v => {
 			const value = getValue()
 			if (typeof value === 'object') {

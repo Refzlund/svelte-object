@@ -1,8 +1,10 @@
-import { onDestroy, setContext, tick } from 'svelte'
+import { getContext, onDestroy, setContext, tick } from 'svelte'
 import type { ValueStore } from '../value-store'
 import { get, writable, type Unsubscriber, type Writable } from 'svelte/store'
+import type { Bind, StoreCallback } from './types'
 
 export type SvelteObject = Readonly<{
+	id: string | number | symbol | undefined
 	store: ValueStore<Record<any, any>>
 	stores: ValueStore<any>[]
 	/** These are the attributes passed to this object which cascades to child Objects and Arrays*/
@@ -11,7 +13,30 @@ export type SvelteObject = Readonly<{
 	attributes: { subscribe: Writable<Record<any, any>>['subscribe'] }
 	addValueStore(incoming: ValueStore<any>): void
 	removeValueStore(incoming: ValueStore<any>): void
+	setId(id: string | number | symbol | undefined): void
 }>
+
+export function objectFromId(item: Bind<any, any>) {
+	let value = item as Writable<any> | [Writable<any>, StoreCallback<any, any>]
+	if (typeof item === 'string' || typeof item[0] === 'string') {
+		const isArray = typeof item === 'object'
+		const id = isArray ? item[0] : item
+		const obj = getContext(`svelte-object[${id}]`) as SvelteObject
+		if(!obj)
+			throw new Error(`Could not find svelte-object with the id of "${id}"`)
+		if (isArray)
+			value[0] = obj.store as Writable<any>
+		else
+			value = obj.store as Writable<any>
+	}
+	return value
+}
+
+export function assertIsWritable(item: any): asserts item is Writable<any> {
+	if ('subscribe' in item)
+		return
+	throw new TypeError('Item is now a writable')
+}
 
 export function svelteObject(store: ValueStore<Record<any, any>>): SvelteObject {
 	/** Recursive attributes */
@@ -35,6 +60,7 @@ export function svelteObject(store: ValueStore<Record<any, any>>): SvelteObject 
 	}
 
 	const obj: SvelteObject = {
+		id: undefined,
 		store,
 		stores: [],
 		$$restProps: $$restProps,
@@ -99,7 +125,17 @@ export function svelteObject(store: ValueStore<Record<any, any>>): SvelteObject 
 			unsubs.delete(incoming)
 			// @ts-expect-error Cannot assign to 'stores' because it is a read - only property.ts(2540)
 			obj.stores = [...obj.stores.slice(0, index), ...obj.stores.slice(index + 1)]
-		}
+		},
+		setId(id) {
+			if (obj.id !== undefined)
+				setContext(`svelte-object[${obj.id.toString()}]`, undefined)
+			if (id === undefined)
+				return
+			// @ts-expect-error
+			obj.id = id
+			console.log(id.toString())
+			setContext(`svelte-object[${id.toString()}]`, obj)
+		},
 	}
 
 	onDestroy(() => {

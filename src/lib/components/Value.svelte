@@ -10,16 +10,19 @@
 		store: ValueStore<T>
 		name?: string | number
 		bind?: Bind<T, K>
+		parent?: string
 	}
 
 	export let 
 		store: ValueStore<T>,
 		name: string | number | undefined = undefined,
-		bind: Bind<T, K> | undefined = undefined
+		bind: Bind<T, K> | undefined = undefined,
+		parent: string | undefined = undefined
 
 	export const validate = store.validate
 
 	$: store.setName(name)
+	$: store.setParent(parent)
 
 	const 
 		error = store.error,

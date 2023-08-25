@@ -1,5 +1,6 @@
-import { get } from 'svelte/store'
+import { get, type Writable } from 'svelte/store'
 import type { Bind, StoreCallback } from './types'
+import { assertIsWritable, objectFromId } from './svelte-object'
 
 
 
@@ -10,6 +11,8 @@ import type { Bind, StoreCallback } from './types'
  * @example const { getValue, setvalue } = storeValue(store)
 */
 export function storeValue<T, K>(item: Bind<T, K>) {
+	item = objectFromId(item)
+
 	let store = 'set' in item ? item : item[0]
 	const fn: StoreCallback<T, K> | undefined = item[1]
 	const keys: string[] = []
@@ -36,6 +39,8 @@ export function storeValue<T, K>(item: Bind<T, K>) {
 	}
 
 	function setValue(value: [K] extends [never] ? T : K) {
+		assertIsWritable(store)
+
 		if (!fn) {
 			store.set(value as any)
 			return
@@ -67,7 +72,8 @@ export function storeValue<T, K>(item: Bind<T, K>) {
 			return v
 		})
 	}
-
+	
+	assertIsWritable(store)
 	return {
 		getValue, setValue, store, fn
 	}

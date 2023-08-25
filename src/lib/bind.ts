@@ -1,7 +1,10 @@
+import { getContext } from 'svelte'
 import { getCheckbox, type CheckboxElement, setCheckbox, formatCheckboxArray } from './utils/checkbox'
 import { isNodeCheckbox, isNodeDiv } from './utils/node-type'
 import { storeValue } from './utils/store-value'
 import type { Bind } from './utils/types'
+import { assertIsWritable, objectFromId, type SvelteObject } from './utils/svelte-object'
+import type { Writable } from 'svelte/store'
 
 type BindNode = HTMLInputElement | HTMLDivElement | HTMLSelectElement | HTMLTextAreaElement
 
@@ -10,6 +13,7 @@ export function bind<T, K>(node: BindNode, item: Bind<T, K> | undefined) {
 	function init(item: Bind<T, K> | undefined) {
 		if (!item)
 			return
+		item = objectFromId(item)
 		if (!('subscribe' in item) && !item?.[0])
 			return
 
