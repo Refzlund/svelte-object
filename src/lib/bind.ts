@@ -1,52 +1,72 @@
+import { getCheckbox, type CheckboxElement, setCheckbox, formatCheckboxArray } from './utils/checkbox'
+import { isNodeCheckbox, isNodeDiv } from './utils/node-type'
 import { storeValue } from './utils/store-value'
 import type { Bind } from './utils/types'
 
-export function bind<T, K>(node: HTMLInputElement | HTMLDivElement, item: Bind<T, K> | undefined) {
+type BindNode = HTMLInputElement | HTMLDivElement | HTMLSelectElement | HTMLTextAreaElement
+
+export function bind<T, K>(node: BindNode, item: Bind<T, K> | undefined) {
 	let destroy: (() => void) | undefined = undefined
 	function init(item: Bind<T, K> | undefined) {
 		if (!item)
 			return
 		if (!('subscribe' in item) && !item?.[0])
 			return
+
 		const { setValue, getValue, store } = storeValue<T, K>(item)
 
-		const div = !('value' in node && 'checked' in node && 'type' in node)
-		const check = !div && (node.type === 'checkbox' || node.type === 'radio')
+		const isDiv = isNodeDiv(node)
+		const isCheckbox = isNodeCheckbox(node)
 
-		if (div)
+		if (isDiv)
 			node.contentEditable = 'true'
 
-		const initial = getValue()
-		if (div)
+		let initial = getValue()
+		if (isDiv)
 			setValue(node.textContent as any)
 		else if (typeof initial !== 'undefined') {
-			if(check)
-				node.checked = initial
+			if (isCheckbox) {
+				const nodeValue = node.getAttribute('value')
+				const nullValue = nodeValue !== null
+				node.checked = initial === (nullValue ? true : nodeValue)
+				if (node.type.toUpperCase() === 'CHECKBOX' && nullValue) {
+					initial = formatCheckboxArray(initial)
+					setValue(initial)
+				}
+			}
 			else
 				node.value = initial
 		}
-		else if (check)
-			setValue(node.checked as any)
+		else if (isCheckbox) {
+			if (node.getAttribute('value') !== null) {
+				initial ??= []
+				if (!Array.isArray(initial))
+					initial = [initial]
+			}
+			setValue(getCheckbox(node, initial) as any)
+		}
 		else if (node.value)
-			setValue(node.value as any)
+			setValue(node.value || '' as any)
 		
 		const unsub = store.subscribe(v => {
-			if (div) {
-				node.textContent = getValue()
-				return
-			}
-			node.value = getValue() || (check ? false : '')
+			const value = getValue()
+			if (isDiv)
+				node.textContent = value
+			else if (isCheckbox)
+				setCheckbox(node, value)
+			else
+				node.value = value
 		})
 
 		function getNodeValue(): unknown {
-			if (div)
+			if (isDiv)
 				return node.textContent
-			if (check)
-				return node.checked
+			if (isCheckbox)
+				return getCheckbox(node, getValue())
 			return node.value
 		}
 
-		function update() {
+		function update(e) {
 			setValue(getNodeValue() as any)
 		}
 

@@ -31,6 +31,28 @@
 
 	<I.Object bind:store let:store test='123'>
 		
+		<input type='radio' use:store={'k'} value={false}>
+		<input type='radio' value='no' use:store={'k'}>
+		<input type='radio' value='yes' use:store={'k'}>
+		
+		<input type='checkbox' use:store={'c'}>
+		<input type='checkbox' value='no' use:store={'c'}>
+		<input type='checkbox' value='yes' use:store={'c'}>
+
+
+		<select use:store={'s'}>
+			<option value='a'>a</option>
+			<option value='b'>b</option>
+			<option value='c'>c</option>
+			<option value={1}>1</option>
+			<option value={2}>2</option>
+			<option value={3}>3</option>
+		</select>
+
+		<textarea use:store={'t'}>
+			Some text
+		</textarea>
+
 		<input use:store={'property'} />
 		<I.Array let:store let:value name='array'>
 
