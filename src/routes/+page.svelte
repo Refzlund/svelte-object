@@ -7,6 +7,9 @@
 	let s: ValueStore<{ 
 		test: string
 		min: number
+		'multi-checkbox': string[]
+		checkbox: boolean
+		radio: string
 		nested: {
 			str: string
 			inside: {
@@ -31,6 +34,8 @@
 
 	onMount(async () => {
 		s.update(v => {
+			v.checkbox = true
+			v.radio = 'a'
 			v.test = 'herp'
 			v['nested'] = { ...(v['nested'] || { str:'' }), inside: { deep: '1st' } }
 			v['another'] = { nested: { 'some-text': 'A' } }
@@ -40,6 +45,9 @@
 		await sleep(750)
 		
 		s.update(v => {
+			v.checkbox = false
+			v.radio = 'b'
+			v['multi-checkbox'] = ['b', 'c']
 			v.test = 'derp'
 			v.nested.inside.deep = '2nd'
 			v.another.nested['some-text'] = 'B'
@@ -50,6 +58,9 @@
 		
 		t.set('slurp')
 		s.update(v => {
+			v.checkbox = true
+			v.radio = 'c'
+			v['multi-checkbox'] = []
 			v.nested.inside.deep = '3rd'
 			v.another.nested['some-text'] = 'C'
 			v.nested.str = 'str'
@@ -73,7 +84,7 @@
 <container>
 	
 	<I.Text bind={[s, s => s.text]}>Text</I.Text>
-	<I.Object bind:store={s} let:store let:value partial={{ nested: { str: 'Pre-defined value' } }} test={testAttribute} disabled={$s?.disableAll} >
+	<I.Object bind:store={s} let:store let:value partial={{ 'multi-checkbox': ['a', 'b', 'c'], nested: { str: 'Pre-defined value' } }} test={testAttribute} disabled={$s?.disableAll} >
 		<div style='flex-direction: row;'>
 			<label for='disableall'>Disable all</label>
 			<input id='disableall' type='checkbox' use:bind={[store, s => s.disableAll]} />
@@ -94,6 +105,18 @@
 					<I.Text name='{$t}'>{$t}</I.Text>
 					<!-- <h4>Dynamic bind - Does not work.</h4> -->
 					<!-- <I.Text bind={[store, s => s[$t || '']]}>bind {$t}</I.Text> -->
+				</div>
+
+				<div class="nested">
+					<input type='checkbox' use:store={'checkbox'} />
+					<input type='radio' use:store={'radio'} value='a' />
+					<input type='radio' use:store={'radio'} value='b' />
+					<input type='radio' use:store={'radio'} value='c' />
+					
+					<input type='checkbox' use:store={'multi-checkbox'} value='a' />
+					<input type='checkbox' use:store={'multi-checkbox'} value='b' />
+					<input type='checkbox' use:store={'multi-checkbox'} value='c' />
+					
 				</div>
 
 				<div class='nested'>
