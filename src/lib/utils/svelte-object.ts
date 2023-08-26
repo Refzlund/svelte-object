@@ -133,7 +133,6 @@ export function svelteObject(store: ValueStore<Record<any, any>>, ignore = false
 				return
 			// @ts-expect-error
 			obj.id = id
-			console.log(id.toString())
 			setContext(`svelte-object[${id.toString()}]`, obj)
 		},
 	}
