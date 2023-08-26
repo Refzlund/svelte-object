@@ -38,7 +38,7 @@ export function assertIsWritable(item: any): asserts item is Writable<any> {
 	throw new TypeError('Item is now a writable')
 }
 
-export function svelteObject(store: ValueStore<Record<any, any>>): SvelteObject {
+export function svelteObject(store: ValueStore<Record<any, any>>, ignore = false): SvelteObject {
 	/** Recursive attributes */
 	const $$restProps = writable({})
 	const attributes = writable({})
@@ -146,6 +146,7 @@ export function svelteObject(store: ValueStore<Record<any, any>>): SvelteObject 
 			unsub()
 	})
 
-	setContext('svelte-object', obj)
+	if(!ignore)
+		setContext('svelte-object', obj)
 	return obj
 }

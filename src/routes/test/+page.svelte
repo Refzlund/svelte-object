@@ -28,8 +28,8 @@
 <div>
 
 	<I.Object id='some-id' let:value>
-		<I.Object name='nested'>
-			<I.Text parent='some-id' name='property' />
+		<I.Object name='nested' ignore>
+			<I.Text  name='property' />
 		</I.Object>
 
 		<I.Object bind='some-id'>

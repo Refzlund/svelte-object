@@ -20,7 +20,8 @@
 	export let 
 		name: string | number | undefined = undefined,
 		bind: Bind<T, K> | undefined = undefined,
-		id: string | undefined = undefined
+		id: string | undefined = undefined,
+		ignore: boolean = false
 
 	store.prechange = v => {
 		if(!v)
@@ -31,7 +32,7 @@
 	}
 	store.setName(name)
 
-	const obj = svelteObject(store)
+	const obj = svelteObject(store, ignore)
 	$: obj.$$restProps.set($$restProps as any)
 	const attributes = obj.attributes
 
