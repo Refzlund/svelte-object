@@ -26,9 +26,6 @@ devDependencies:
   svelte-preprocess:
     specifier: ^5.0.4
     version: 5.0.4(sass@1.57.1)(svelte@4.2.0)(typescript@5.1.6)
-  sveltekit-zero-api:
-    specifier: ^0.15.7
-    version: 0.15.7(@sveltejs/kit@1.22.6)(svelte@4.2.0)(typescript@5.1.6)
   tslib:
     specifier: ^2.4.1
     version: 2.4.1
@@ -1132,18 +1129,6 @@ packages:
       locate-character: 3.0.0
       magic-string: 0.30.2
       periscopic: 3.1.0
-    dev: true
-
-  /sveltekit-zero-api@0.15.7(@sveltejs/kit@1.22.6)(svelte@4.2.0)(typescript@5.1.6):
-    resolution: {integrity: sha512-yklGBeRfHw4dmMjvzskkuXbeakyKWyRqmiVbuD/a4xXPsU3TerBfNKAy6+7Bmpo2KIE2Q6LTdrs+JUQyYYtltA==}
-    peerDependencies:
-      '@sveltejs/kit': ^1.5.5
-      svelte: ^3.55.1
-      typescript: '>=5.0.0'
-    dependencies:
-      '@sveltejs/kit': 1.22.6(svelte@4.2.0)(vite@4.0.4)
-      svelte: 4.2.0
-      typescript: 5.1.6
     dev: true
 
   /to-regex-range@5.0.1:

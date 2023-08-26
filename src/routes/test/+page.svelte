@@ -15,17 +15,7 @@
 		// store.subscribe(v => console.log(v))
 	})
 
-</script>
-
-
-<div>
-	<input use:bind={s} /> {$s}
-</div>
-
-
-
-
-<div>
+	/**
 
 	<I.Object id='some-id' let:value>
 		<I.Text name='normal' />
@@ -41,6 +31,22 @@
 
 		<p>{JSON.stringify(value, null, '\t')}</p>
 	</I.Object>
+
+	*/
+
+</script>
+
+
+<div>
+	<input use:bind={s} /> {$s}
+</div>
+
+
+	
+
+<div>
+
+	
 
 	<I.Object bind:store let:store test='123'>
 		
@@ -71,7 +77,7 @@
 
 			{#each value as item, k}
 				<input use:store={k} />
-				<I.Text name='{k}'></I.Text>
+				<!-- <I.Text name='{k}'></I.Text> -->
 			{/each}
 			<button on:click={() => value.push('')}>Add</button>
 
@@ -79,7 +85,7 @@
 
 	</I.Object>
 
-	<input use:bind={[store, s => s.array[2]]} />
+	<!-- <input use:bind={[store, s => s.array[2]]} /> -->
 
 	<hr>
 	<hr>
