@@ -19,7 +19,7 @@
 		"vite": "^4.0.4",
 		"svelte": "^4.2.0"
 	},
-	"dependencies": {
+	"peerDependencies": {
 		"svelte": ">=4.0.0"
 	},
 	"type": "module",
