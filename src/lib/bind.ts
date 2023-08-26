@@ -53,7 +53,7 @@ export function bind<T, K>(node: BindNode, item: Bind<T, K> | undefined) {
 		}
 		else if (node.value)
 			setValue(node.value || '' as any)
-		else if (type === 'text')
+		else if (type === 'TEXT')
 			setValue('' as any)
 		
 		const unsub = store.subscribe(v => {
