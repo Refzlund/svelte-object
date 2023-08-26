@@ -33,8 +33,8 @@ This could be your code <sup><a href='https://svelte.dev/repl/a750718bed5a4a0eac
 
 <br>
 
-> [!NOTE]  
-> And don't forget about all the [other features](https://github.com/Refzlund/svelte-object/wiki/Features)! 
+> **Note**  
+> What are you waiting for? [Get Started](https://github.com/Refzlund/svelte-object/wiki/Basic-Usage)!
 
 <br>
 <br>
