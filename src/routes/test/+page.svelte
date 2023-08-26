@@ -28,12 +28,15 @@
 <div>
 
 	<I.Object id='some-id' let:value>
-		<I.Object name='nested' ignore>
-			<I.Text  name='property' />
+		<I.Text name='normal' />
+		<I.Object id='nested' name='nested' ignore>
+			<I.Text name='ignore nested' />
+			<I.Text parent='nested' name='parent nested' />
 		</I.Object>
 
 		<I.Object bind='some-id'>
-			<I.Text name='property' /> <!-- Will be the same property as above component -->
+			<span>This property parent has `bind="some-id"`</span>
+			<I.Text name='ignore nested' /> <!-- Will be the same property as above component -->
 		</I.Object>
 
 		<p>{JSON.stringify(value, null, '\t')}</p>
