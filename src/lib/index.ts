@@ -7,6 +7,8 @@ export { default as Array } from './components/Array.svelte'
 export type { SvelteArray } from './components/Array.svelte'
 export type { ObjectStore } from './utils/object-store'
 
+export { getParentObject, getParentStore } from './get-parent-object'
+
 export { proxifyArray } from './utils/proxify-array'
 
 import type { ComponentProps } from 'svelte'

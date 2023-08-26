@@ -76,6 +76,7 @@ export type ValueStore<T> = Readonly<{
 	initialValue?: T
 	/** Removes errors/warnings and sets the value to initial value or the parameter value provided to the function */
 	reset(value: T): void
+	setParent(parent: undefined | string | number | symbol | SvelteObject): void
 }> & {
 	prechange?(value: T): T
 	onValidate?(event: ValidationEvent<T>): void
@@ -91,12 +92,12 @@ export type ValueStoreContent<T extends ValueStore<any>> = T extends ValueStore<
  * export const store = valueStore<T>('Initial value')
 */
 export function valueStore<T>(initialValue: T): ValueStore<T> {
-	const obj = getContext('svelte-object') as SvelteObject
+	let parentObject = getContext('svelte-object') as SvelteObject
 	const svelteStore = writable<T>(initialValue)
 	
 	const store: ValueStore<T> = {
 		initialValue,
-		parent: obj,
+		parent: parentObject,
 		set(value) {
 			svelteStore.set(store.prechange ? store.prechange(value) : value)
 		},
@@ -112,10 +113,29 @@ export function valueStore<T>(initialValue: T): ValueStore<T> {
 		},
 		subscribe: svelteStore.subscribe,
 		propertyName: undefined,
+		setParent(parent) {
+			parentObject?.removeValueStore(store)
+			if (parent === undefined) {
+				parentObject = getContext('svelte-object')
+				if (parentObject && store.propertyName)
+					store.setName(store.propertyName)
+				return
+			}
+			if (typeof parent === 'object') {
+				// @ts-expect-error
+				store.parent = parent
+			}
+			else {
+				parentObject = getContext(`svelte-object[${parent.toString()}]`)
+			}
+			if (parentObject && store.propertyName)
+				store.setName(store.propertyName)
+		},
 		setName(name) {
+			parentObject?.removeValueStore(store)
 			// @ts-expect-error
 			store.propertyName = name
-			obj?.addValueStore(store)
+			parentObject?.addValueStore(store)
 		},
 		validate(trigger = 'forced', value) {
 			if (!store.onValidate)
@@ -177,7 +197,7 @@ export function valueStore<T>(initialValue: T): ValueStore<T> {
 	onMount(() => {
 		return () => {
 			unsub()
-			obj?.removeValueStore(store)
+			parentObject?.removeValueStore(store)
 		}
 	})
 	

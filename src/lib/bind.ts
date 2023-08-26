@@ -1,7 +1,10 @@
+import { getContext } from 'svelte'
 import { getCheckbox, type CheckboxElement, setCheckbox, formatCheckboxArray } from './utils/checkbox'
-import { isNodeCheckbox, isNodeDiv } from './utils/node-type'
+import { isNodeCheckbox, isNodeDiv, isNodeInput } from './utils/node-type'
 import { storeValue } from './utils/store-value'
 import type { Bind } from './utils/types'
+import { assertIsWritable, objectFromId, type SvelteObject } from './utils/svelte-object'
+import type { Writable } from 'svelte/store'
 
 type BindNode = HTMLInputElement | HTMLDivElement | HTMLSelectElement | HTMLTextAreaElement
 
@@ -10,10 +13,13 @@ export function bind<T, K>(node: BindNode, item: Bind<T, K> | undefined) {
 	function init(item: Bind<T, K> | undefined) {
 		if (!item)
 			return
+		item = objectFromId(item)
 		if (!('subscribe' in item) && !item?.[0])
 			return
 
 		const { setValue, getValue, store } = storeValue<T, K>(item)
+
+		const type = isNodeInput(node) && node.type.toUpperCase()
 
 		const isDiv = isNodeDiv(node)
 		const isCheckbox = isNodeCheckbox(node)
@@ -29,7 +35,7 @@ export function bind<T, K>(node: BindNode, item: Bind<T, K> | undefined) {
 				const nodeValue = node.getAttribute('value')
 				const nullValue = nodeValue !== null
 				node.checked = initial === (nullValue ? true : nodeValue)
-				if (node.type.toUpperCase() === 'CHECKBOX' && nullValue) {
+				if (type === 'CHECKBOX' && nullValue) {
 					initial = formatCheckboxArray(initial)
 					setValue(initial)
 				}
@@ -47,6 +53,8 @@ export function bind<T, K>(node: BindNode, item: Bind<T, K> | undefined) {
 		}
 		else if (node.value)
 			setValue(node.value || '' as any)
+		else if (type === 'text')
+			setValue('' as any)
 		
 		const unsub = store.subscribe(v => {
 			const value = getValue()

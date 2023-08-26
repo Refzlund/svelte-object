@@ -4,7 +4,6 @@
 	import { valueStore, type ValueStore } from '$lib/value-store'
 	import { createBindFunction } from '$lib/utils/component-bind'
 	import { svelteObject } from '$lib/utils/svelte-object'
-	import { bind as bindUtility } from 'svelte-object/bind'
 	import type { Bind, RecursivePartial } from '$lib/utils/types'
 	import onValidate from '$lib/utils/object-onValidate'
 
@@ -20,7 +19,9 @@
 	export const store = createObjectStore(valueStore<T>((value || partial || {}) as T))
 	export let 
 		name: string | number | undefined = undefined,
-		bind: Bind<T, K> | undefined = undefined
+		bind: Bind<T, K> | undefined = undefined,
+		id: string | undefined = undefined,
+		ignore: boolean = false
 
 	store.prechange = v => {
 		if(!v)
@@ -31,9 +32,11 @@
 	}
 	store.setName(name)
 
-	const obj = svelteObject(store)
+	const obj = svelteObject(store, ignore)
 	$: obj.$$restProps.set($$restProps as any)
 	const attributes = obj.attributes
+
+	$: obj.setId(id)
 
 	store.onValidate = onValidate(obj)
 
