@@ -77,7 +77,6 @@
 
 			{#each value as item, k}
 				<input use:store={k} />
-				<!-- <I.Text name='{k}'></I.Text> -->
 			{/each}
 			<button on:click={() => value.push('')}>Add</button>
 
@@ -85,7 +84,7 @@
 
 	</I.Object>
 
-	<!-- <input use:bind={[store, s => s.array[2]]} /> -->
+	<input use:bind={[store, s => s.array[2]]} />
 
 	<hr>
 	<hr>

@@ -38,19 +38,24 @@ export default function valueStoreArray<T extends Array<any>>(initialValue: T): 
 		return item
 	}
 	
-	return {
-		...store,
-		set(value) {
-			proxifyArray(store, value)
-			store.set(value)
-		},
-		update(updater) {
-			return store.update((v: any) => {
-				const result = updater?.(v)
-				if (updater)
-					proxifyArray(store, result)
-				return result || get(store)
-			})
-		}
-	} as typeof store
+	const setFunction = store.set
+	const updateFunction = store.update
+
+	// @ts-expect-error Read-only
+	store.set = (value) => {
+		proxifyArray(store, value)
+		setFunction(value)
+	}
+	
+	// @ts-expect-error Read-only
+	store.update = (updater) => {
+		return updateFunction((v: any) => {
+			const result = updater?.(v)
+			if (updater)
+				proxifyArray(store, result)
+			return result || get(store)
+		})
+	}
+	
+	return store
 }
