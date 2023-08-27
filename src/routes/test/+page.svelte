@@ -15,7 +15,13 @@
 		// store.subscribe(v => console.log(v))
 	})
 
-	/**
+</script>
+
+
+<div>
+	<input use:bind={s} /> {$s}
+</div>
+
 
 	<I.Object id='some-id' let:value>
 		<I.Text name='normal' />
@@ -26,23 +32,11 @@
 
 		<I.Object bind='some-id'>
 			<span>This property parent has `bind="some-id"`</span>
-			<I.Text name='ignore nested' /> <!-- Will be the same property as above component -->
+			<I.Text name='ignore nested'  /> <!-- Will be the same property as above component -->
 		</I.Object>
 
 		<p>{JSON.stringify(value, null, '\t')}</p>
 	</I.Object>
-
-	*/
-
-</script>
-
-
-<div>
-	<input use:bind={s} /> {$s}
-</div>
-
-
-	
 
 <div>
 

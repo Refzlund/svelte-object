@@ -196,10 +196,11 @@
 						<div class='nested'>
 							<I.Text name='min' min={20} value='giraffeisnice'>Min. 20 characters</I.Text>
 							<div class='nested'>
-								<I.Array name='array' let:value value={[ '', 'short' ]}>
+								<I.Array name='array' let:svelteObject let:value value={[ '', 'short' ]}>
 									{#each value as item, i}
 										<I.Text name='{i}' required min={7}>Required Min. 7 characters</I.Text>
 									{/each}
+									<button on:click={() => console.log(svelteObject.stores)}>Log</button>
 								</I.Array>
 							</div>
 						</div>

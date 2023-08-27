@@ -6,6 +6,7 @@
 	import { svelteObject } from '$lib/utils/svelte-object'
 	import type { Bind, RecursivePartial } from '$lib/utils/types'
 	import onValidate from '$lib/utils/object-onValidate'
+	import { bind as bindUtil } from '$lib/bind'
 
 	type T = $$Generic<Record<any, any>>
 	type K = $$Generic
@@ -16,7 +17,14 @@
 	export let value: T | undefined = undefined
 	/** Initial value (value property is prioritized over this) */
 	export let partial: RecursivePartial<T> | undefined = undefined
-	export const store = createObjectStore(valueStore<T>((value || partial || {}) as T))
+	
+	export const store = valueStore(
+		(value || partial || {}) as T,
+		() => function bindStore(node: Parameters<typeof bindUtil>[0], property: string) {
+			return bindUtil(node, [store, s => s[property]])
+		}
+	)
+
 	export let 
 		name: string | number | undefined = undefined,
 		bind: Bind<T, K> | undefined = undefined,

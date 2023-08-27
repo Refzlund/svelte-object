@@ -28,7 +28,8 @@ type ValidationEvent<T> = {
 		 * 
 		 * This can give dynamic information for the input.
 		*/
-		update?: (value: T) => string): void
+		update?: (value: T) => string
+	): void
 
 	/** A conditional warning message */
 	warning(
@@ -49,7 +50,8 @@ type ValidationEvent<T> = {
 		 * 
 		 * This can give dynamic information for the input.
 		*/
-		update?: (value: T) => string): void
+		update?: (value: T) => string
+	): void
 
 	/** The value of the store at the time of the trigger */
 	value: T
@@ -69,7 +71,7 @@ export type ValueStore<T> = Readonly<{
 	/** Returns `true` if valid */
 	validate(trigger?: keyof ValidationTrigger | 'forced', value?: T): boolean
 	setName(name: string | number | undefined): void
-	propertyName?: string | number 
+	propertyName?: string 
 	error: Writable<undefined | { message: string, show?: (value: T) => boolean, update?: (value: T) => string }>
 	warning: Writable<undefined | { message: string, show?: (value: T) => boolean, update?: (value: T) => string }>
 	parent?: SvelteObject
@@ -82,20 +84,31 @@ export type ValueStore<T> = Readonly<{
 	onValidate?(event: ValidationEvent<T>): void
 }
 
+export type ValueStoreFn<T, F extends Function> = ValueStore<T> & F
+
 export type ValueStoreContent<T extends ValueStore<any>> = T extends ValueStore<infer K> ? K : never 
+
+type CallableFunction = () => Function
 
 /**
  * @example
  * type T = string
- * interface $$Props extends ValueProps<T> {}
+ * type Bind = $$Generic
+ * interface $$Props extends ValueProps<T, Bind> {}
  *
  * export const store = valueStore<T>('Initial value')
 */
-export function valueStore<T>(initialValue: T): ValueStore<T> {
+export function valueStore<T, C extends CallableFunction | undefined>(
+	initialValue: T,
+	callableStore?: C
+): [C] extends [Function] ? ValueStoreFn<T, ReturnType<C>> : ValueStore<T> {
 	let parentObject = getContext('svelte-object') as SvelteObject
 	const svelteStore = writable<T>(initialValue)
 	
-	const store: ValueStore<T> = {
+	type Store = [C] extends [Function] ? ValueStoreFn<T, ReturnType<C>> : ValueStore<T>
+	let store = (callableStore ? callableStore() : {}) as Store
+	
+	const storeObject: ValueStore<T> = {
 		initialValue,
 		parent: parentObject,
 		set(value) {
@@ -134,7 +147,7 @@ export function valueStore<T>(initialValue: T): ValueStore<T> {
 		setName(name) {
 			parentObject?.removeValueStore(store)
 			// @ts-expect-error
-			store.propertyName = name
+			store.propertyName = name?.toString()
 			parentObject?.addValueStore(store)
 		},
 		validate(trigger = 'forced', value) {
@@ -154,6 +167,9 @@ export function valueStore<T>(initialValue: T): ValueStore<T> {
 		error: writable(undefined),
 		warning: writable(undefined)
 	}
+
+	for (let key in storeObject)
+		store[key] = storeObject[key]
 
 	const error: ValidationEvent<T>['error'] = (message, show, update) => {
 		if (get(store.error)) return

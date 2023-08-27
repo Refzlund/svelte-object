@@ -10,7 +10,7 @@
 	}
 
 	export let value: T = undefined
-	export const store = valueStore<T>(value)
+	export const store = valueStore(value)
 	
 	export let min: number | undefined = undefined
 
