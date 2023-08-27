@@ -10,7 +10,7 @@
 	}
 
 	export let value: T = undefined
-	export const store = valueStore<T>(value)
+	export const store = valueStore(value)
 
 	export let 
 		required = false,
@@ -20,7 +20,7 @@
 	const v = {
 		required: {
 			isInvalid: (value: T) => required && (!value || value.length === 0),
-			message: () => `${store.propertyName || 'This input'} is required` as const
+			message: () => `${store.propertyName === undefined ? 'This input' : store.propertyName} is required` as const
 		},
 		min: {
 			isInvalid: (value: T) => min > 0 && (value?.length || 0) !== 0 && (value?.length || 0) < min,

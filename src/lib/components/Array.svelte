@@ -19,11 +19,7 @@
 	type O = InferArray<T>
 	type K = $$Generic
 	type P = $$Generic<string>
-
 	
-	
-
-
 	/** Initial value */
 	export let value: T | undefined = undefined
 	export const store = valueStoreArray<SvelteArray<O>>(value || [] as any)
@@ -61,4 +57,4 @@
 	
 </script>
 
-<slot {store} value={$store || []} attributes={$attributes}/>
+<slot svelteObject={obj} {store} value={$store || []} attributes={$attributes}/>
