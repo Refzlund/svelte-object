@@ -1,6 +1,6 @@
 {
 	"name": "svelte-object",
-	"version": "1.4.1",
+	"version": "1.4.2",
 	"scripts": {
 		"dev": "vite dev --port 5222",
 		"package": "svelte-package",
@@ -39,6 +39,7 @@
 	"files": [
 		"dist"
 	],
+	"main": "dist/index.d.ts",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
