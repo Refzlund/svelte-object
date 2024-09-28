@@ -8,6 +8,13 @@
 
 <br>
 
+<div align='center'>
+	<img src='https://upload.wikimedia.org/wikipedia/commons/1/1b/Svelte_Logo.svg' width=20 align='center'>   
+	<b>Made for Svelte 5</b>
+</div>
+
+<br>
+
 <div align='center'>Get started with literal wizardry!🧙‍♂️</div>
 <div align='center'><code>npm i -D svelte-object</code>  /  <code>pnpm add -D svelte-object</code></div>
 
