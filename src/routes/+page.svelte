@@ -9,9 +9,9 @@
 <I.Object value={v}>
 	{#snippet children({ value })}
 		{JSON.stringify(value)}
-		<I.Prop name='value' value=''>
+		<I.Prop name='value' value='fallback'>
 			{#snippet children(prop)}
-				<input bind:value={prop.value}>
+				'<input bind:value={prop.value}>'
 			{/snippet}
 		</I.Prop>
 		<input bind:value={value.value}>
@@ -20,6 +20,8 @@
 </I.Object>
 
 <input bind:value={v.value}>
+
+<div contenteditable bind:textContent={v.value}></div>
 
 
 <style lang='postcss'>
