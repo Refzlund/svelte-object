@@ -10,12 +10,12 @@
 
 	function moveItem(index: number, direction: number) {
 		let array = $state.snapshot(arr)
-		let a = array[index]
 
 		let other = index + direction
 		if(other === -1) other = array.length - 1
 		if(other === array.length) other = 0 
 
+		let a = array[index]
 		let b = array[other]
 		arr[index] = b
 		arr[other] = a

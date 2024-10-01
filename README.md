@@ -3,8 +3,8 @@
 <br>
 
 👉   Define objects in your markup-structure!  
-💫   Driven by svelte stores for highly robust code  
-🔥   Custom `valueStore` to handle (<i>subscribable</i>) error and warning messages
+💫   Driven by Svelte 5's runes for highly robust code  
+🔥   Handles submit events and validation
 
 <br>
 
