@@ -1,31 +1,60 @@
 <script lang='ts'>
 	
 	import * as I from '$lib'
-	
-	let v = $state({ value: 'some' })
 
 </script>
 
-<I.Object value={v}>
-	{#snippet children({ value })}
-		{JSON.stringify(value)}
-		<I.Prop name='value' value='fallback'>
-			{#snippet children(prop)}
-				'<input bind:value={prop.value}>'
+<I.Object>
+	{#snippet children({ value: obj })}
+		
+		<I.Array name='arr'>
+			{#snippet children({ value: arr })}
+				{#each arr as item, j}
+					<I.Object name={j}>
+						<div>
+							<I.Value name='name' value='Lillemis'>
+								{#snippet children(prop)}
+									<input bind:value={prop.value}>
+								{/snippet}
+							</I.Value>
+							<I.Value name='age'>
+								{#snippet children(prop)}
+									<input type='number' bind:value={prop.value}>
+								{/snippet}
+							</I.Value>
+						</div>
+					</I.Object>
+				{/each}
+				<button onclick={() => arr.push({})}>Add item</button>
 			{/snippet}
-		</I.Prop>
-		<input bind:value={value.value}>
-	{/snippet}
+		</I.Array>
 
+		<I.Value name='value' value='fallback'>
+			{#snippet children(prop)}
+				<input bind:value={prop.value}>
+			{/snippet}
+		</I.Value>
+
+		<div class='code'>
+			{JSON.stringify(obj, null, '    ')}
+		</div>
+	{/snippet}
 </I.Object>
 
-<input bind:value={v.value}>
 
-<div contenteditable bind:textContent={v.value}></div>
+<style>
 
-
-<style lang='postcss'>
+	:global(body) {
+		margin: 10px;
+	}
 	
-	
+	.code {
+		background-color: lightgrey;
+		width: 100%;
+		white-space: pre;
+		padding: 8px;
+
+		font-family: monospace !important;
+	}
 	
 </style>
