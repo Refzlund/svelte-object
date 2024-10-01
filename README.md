@@ -16,7 +16,7 @@
 <br>
 
 <div align='center'>Get started with literal wizardry!🧙‍♂️</div>
-<div align='center'><code>bun i -D svelte-object</code>  /  <code>npm i -D svelte-object</code>  /  <code>pnpm add -D svelte-object</code></div>
+<div align='center'><code>bun add -D svelte-object</code>  /  <code>npm i -D svelte-object</code>  /  <code>pnpm add -D svelte-object</code></div>
 
 <br>
 <br>
