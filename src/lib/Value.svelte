@@ -9,7 +9,7 @@
 
 <script lang='ts'>
 	import { getContext, onDestroy, tick, untrack, type Snippet } from 'svelte'
-	import type { ValidationEvent, ValidationMessage, ValidationType } from './validation'
+	import type { ValidationEvent, ValidationMessage, ValidationType } from './validation-types'
 	
 	type T = $$Generic
 	
@@ -125,7 +125,7 @@
 	})
 	$effect.pre(() => {
 		value
-		
+
 		untrack(() => {
 			if(!error?.keepMessage?.(value))
 				error = undefined

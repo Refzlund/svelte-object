@@ -20,7 +20,7 @@
 <script lang='ts'>
 	import { getContext, onDestroy, setContext, untrack, type Snippet } from 'svelte'
 	import deepEqual from 'fast-deep-equal'
-	import type { ValidationEvent, ValidationFn, ValidationType } from './validation'
+	import type { ValidationType } from './validation-types'
 
 	type T = $$Generic<Record<PropertyKey, any>>
 

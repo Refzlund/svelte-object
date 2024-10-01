@@ -26,16 +26,15 @@ This could be your code <sup><a href='https://svelte.dev/repl/a750718bed5a4a0eac
 ```html
 <h3> An array of pets </h3>
 
-<Array name='pets' let:value>
-	{#each value as item, k}
-		<Object name={k}>
+<I.Array bind:value={pets}>
+	{#snippet item(prop)}
+		<I.Object name={prop.index}>
 			<Input name='name'>Pets name</Input>
 			<Input name='age' type='number'>Pets age</Input>
-		</Object>
-		<button on:click={() => value.removeByIndex(k)}> Remove {item.name} </button>
-	{/each}
-	<button on:click={() => value.push({})}> Add pet </button>
-</Array>
+		</I.Object>
+	{/snippet}
+	<button on:click={() => pets.push({})}> Add pet </button>
+</I.Array>
 ```
 
 <br>

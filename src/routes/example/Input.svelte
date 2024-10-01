@@ -2,9 +2,9 @@
 	
 	import { Value, type ValidationEvent, type ValueProps, type ValidationType } from '$lib'
 	import type { Snippet } from 'svelte'
-	import { isMin } from '$lib/validation/min'
-	import { isMax } from '$lib/validation/max'
-	import { isRequired } from '$lib/validation/required'
+	import * as str from '$lib/validation/string'
+	import * as num from '$lib/validation/number'
+	import { isRequired } from '$lib/validation/is-required'
 
 	interface Props extends ValueProps {
 		children?: Snippet,
@@ -35,8 +35,11 @@
 			isRequired(e, required)
 		}
 
-		isMin(e, min, true)
-		isMax(e, max)
+		num.isMin(e, min, true)
+		str.isMin(e, min)
+
+		num.isMax(e, max)
+		str.isMax(e, max)
 	}
 
 </script>
