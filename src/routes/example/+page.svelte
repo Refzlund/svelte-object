@@ -3,7 +3,7 @@
 	import * as I from '$lib'
 	import Input from './Input.svelte'
 	
-	let obj = $state({}) as any
+	let obj = $state({ age: 11 }) as any
 	let arr = $state(undefined) as any
 
 	let attr = $state({ disabled: false })
@@ -11,18 +11,18 @@
 
 <form>
 
-	<I.Object bind:value={obj} bind:attributes={attr}>
+	<I.Object bind:value={obj} bind:attributes={attr} onSubmit={(v) => { console.log('submitted', $state.snapshot(v)) }}>
 		{JSON.stringify(attr)}
 		<button onclick={() => attr.disabled = !attr.disabled}>c</button>
-		<Input bind:value={obj.name}>Name</Input>
-		<Input type='number' name='age'>Age</Input>
+		<Input required bind:value={obj.name} min={3}>Name</Input>
+		<Input type='number' name='age' min={18}>Age</Input>
 		<div class='array'>
 			<button onclick={() => arr.push({})}>Add</button>
 			<I.Array name='array' bind:value={arr}>
 				{#snippet item(prop)}
 					<div class='item'>
 						<I.Object bind:value={prop.value}>
-							<Input name='a'>A</Input>
+							<Input name='a' min={2} required>A</Input>
 							<Input bind:value={prop.value.a}>A</Input>
 							<Input name='b'>B</Input>
 						</I.Object>

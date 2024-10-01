@@ -1,6 +1,7 @@
 <script lang='ts'>
-	import { getContext, setContext, untrack, type Snippet } from 'svelte'
+	import { getContext, onDestroy, setContext, untrack, type Snippet } from 'svelte'
 	import deepEqual from 'fast-deep-equal'
+	import type { ValidationEvent, ValidationFn } from './validation'
 
 	type T = $$Generic<Record<PropertyKey, any>>
 
@@ -15,6 +16,8 @@
 		modified?: boolean
 
 		attributes?: Record<PropertyKey, any>
+
+		onSubmit?: (value: T) => void
 	}
 
 	let v = $state({}) as T | undefined
@@ -29,7 +32,9 @@
 		origin,
 		modified = $bindable(false),
 
-		attributes = $bindable({})
+		attributes = $bindable({}),
+
+		onSubmit
 	}: Props = $props()
 	
 	// svelte-ignore state_referenced_locally
@@ -64,6 +69,8 @@
 
 	let attributeProxy = createAttributeProxy()
 
+	let validators = [] as (typeof validate)[]
+
 	const self = {
 		setValue(key: string | number, newValue: any) {
 			if(key === undefined || key === null || key === '')
@@ -72,6 +79,17 @@
 			if(object && name !== '')
 				object.setValue(name, value)
 		},
+
+		addValidator(fn: typeof validate) {
+			validators.push(fn)
+		},
+		removeValidator(fn: typeof validate) {
+			validators = validators.filter(v => v !== fn)
+		},
+
+		submit,
+		validate,
+
 		get value() { return value },
 		set value(newValue) { value = newValue },
 
@@ -79,12 +97,24 @@
 		set attributes(newValue) { attributes = newValue },
 	}
 
-	if(object && name !== '' && object?.value?.[name])
-		value = object?.value[name] as T
-	else if(object && name !== '')
-		// @ts-expect-error Annoin'
-		object.value[name] = value
-	
+	export function submit() {
+		if(onSubmit) {
+			if(validate('force')) {
+				onSubmit(value!)
+			}
+		}
+		else
+			object?.submit()
+	}
+
+	if(object && (name !== undefined && name !== null) && name !== '') {
+		if(object?.value?.[name])
+			value = object?.value[name] as T
+		else
+			// @ts-expect-error Annoin'
+			object.value[name] = value
+	}
+
 	let checkingIsModified = false
 	function isModified() {
 		if(!origin)
@@ -109,9 +139,21 @@
 	})
 
 	setContext('svelte-object', self)
-	export {
-		value as $
+	
+	/** Validates all values deeply within the object. Returns `true` if `valid` */
+	export function validate(trigger: keyof ValidationEvent<any>['trigger'] | 'force') {
+		let valid = true
+		for(const fn of validators) {
+			let result = fn(trigger)
+			if(result === false)
+				valid = false
+		}
+		return valid
 	}
+
+	object?.addValidator?.(validate)
+	onDestroy(() => object?.removeValidator?.(validate))
+
 </script>
 
 {@render slot?.({ 
