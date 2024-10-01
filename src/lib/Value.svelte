@@ -125,7 +125,7 @@
 	})
 	$effect.pre(() => {
 		value
-		untrack(() => object?.setValue(name, value))
+		
 		untrack(() => {
 			if(!error?.keepMessage?.(value))
 				error = undefined
@@ -133,6 +133,7 @@
 				warning = undefined
 			validate('change')
 		})
+		untrack(() => object?.setValue(name, value))
 	})
 	
 </script>
