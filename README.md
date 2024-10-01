@@ -29,7 +29,7 @@ This could be your code <sup><a href='https://svelte-5-preview.vercel.app/#H4sIA
 <I.Array bind:value={pets}>
 	{#snippet item(prop)}
 		<I.Object name={prop.index}>
-			<Input name='name'>Pets name</Input>
+			<Input name='name' min={2}>Pets name</Input>
 			<Input name='age' type='number'>Pets age</Input>
 		</I.Object>
 	{/snippet}
