@@ -7,6 +7,19 @@
 	let arr = $state(undefined) as any
 
 	let attr = $state({ disabled: false })
+
+	function moveItem(index: number, direction: number) {
+		let array = $state.snapshot(arr)
+		let a = array[index]
+
+		let other = index + direction
+		if(other === -1) other = array.length - 1
+		if(other === array.length) other = 0 
+
+		let b = array[other]
+		arr[index] = b
+		arr[other] = a
+	}
 </script>
 
 <form>
@@ -30,6 +43,9 @@
 							<Input name='a'>A</Input>
 							<Input name='b'>B</Input>
 						</I.Object>
+						<button onclick={() => arr.splice(prop.index, 1)}>Remove</button>
+						<button onclick={() => moveItem(prop.index, 1)}> 👉🏿 </button>
+						<button onclick={() => moveItem(prop.index, -1)}> 👈🏿 </button>
 					</div>
 				{/snippet}
 			</I.Array>
