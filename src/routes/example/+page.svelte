@@ -18,7 +18,7 @@
 		<Input type='number' name='age' min={18}>Age</Input>
 		<div class='array'>
 			<button onclick={() => arr.push({})}>Add</button>
-			<I.Array name='array' bind:value={arr}>
+			<I.Array name='array' bind:value={arr} onSubmit={() => {}}>
 				{#snippet item(prop)}
 					<div class='item'>
 						<I.Object bind:value={prop.value}>

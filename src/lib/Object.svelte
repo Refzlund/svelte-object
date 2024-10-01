@@ -1,11 +1,6 @@
-<script lang='ts'>
-	import { getContext, onDestroy, setContext, untrack, type Snippet } from 'svelte'
-	import deepEqual from 'fast-deep-equal'
-	import type { ValidationEvent, ValidationFn } from './validation'
+<script module lang='ts'>
 
-	type T = $$Generic<Record<PropertyKey, any>>
-
-	interface Props {
+	export interface Props<T extends Record<PropertyKey, any> | any[]> {
 		children?: Snippet<[{ value: T, attributes: Record<PropertyKey, any> }]>
 		name?: string | number
 		value?: T
@@ -19,6 +14,15 @@
 
 		onSubmit?: (value: T) => void
 	}
+
+</script>
+
+<script lang='ts'>
+	import { getContext, onDestroy, setContext, untrack, type Snippet } from 'svelte'
+	import deepEqual from 'fast-deep-equal'
+	import type { ValidationEvent, ValidationFn } from './validation'
+
+	type T = $$Generic<Record<PropertyKey, any>>
 
 	let v = $state({}) as T | undefined
 	
@@ -35,7 +39,7 @@
 		attributes = $bindable({}),
 
 		onSubmit
-	}: Props = $props()
+	}: Props<T> = $props()
 	
 	// svelte-ignore state_referenced_locally
 	v = value

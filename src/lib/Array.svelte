@@ -1,14 +1,16 @@
 <script lang='ts'>
+	import type { ObjectProps } from '$lib'
 	import Object from './Object.svelte'
 	import { type Snippet } from 'svelte'
 
 	type T = $$Generic<any[]>
 
-	interface Props {
-		children?: Snippet<[{ value: T }]>
-		item?: Snippet<[{ value: T extends (infer K)[] ? K : any, index: Readonly<number> }]>
-		value?: T
-		name?: string | number
+	interface Props extends ObjectProps<T> {
+		item?: Snippet<[{ 
+			value: T extends (infer K)[] ? K : any,
+			index: Readonly<number>,
+			attributes: Record<PropertyKey, any>
+		}]>
 	}
 
 	let objectComponent: Object<any>
@@ -20,7 +22,10 @@
 		
 		name = '',
 		children: slot,
-		item
+		item,
+		modified = $bindable(false),
+		attributes = $bindable({}),
+		...rest
 	}: Props = $props()
 
 	// svelte-ignore state_referenced_locally
@@ -45,17 +50,24 @@
 		value as $,
 		push
 	}
-	
+
 </script>
 
-<Object bind:this={objectComponent} bind:value={value as T} {name}>
-	{@render slot?.({ get value() { return value! }, set value(newValue) { value = newValue } })}
+<Object bind:this={objectComponent} bind:value={value as T} {name} bind:modified bind:attributes {...rest}>
+	{@render slot?.({ 
+		get value() { return value! }, 
+		set value(newValue) { value = newValue },
+		get attributes() { return attributes },
+		set attributes(newValue) { attributes = newValue }
+	})}
 	{#if item && Array.isArray(value)}
 		{#each value as valueItem, i}
 			{@render item?.({ 
 				get value() { return valueItem },
 				set value(newValue) { value![i] = newValue },
-				get index() { return i }
+				get index() { return i },
+				get attributes() { return attributes },
+				set attributes(newValue) { attributes = newValue }
 			})}
 		{/each}
 	{/if}
