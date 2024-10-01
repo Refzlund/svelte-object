@@ -1,6 +1,6 @@
 <script lang='ts'>
 	
-	import { Value, type ValidationEvent, type ValueProps } from '$lib'
+	import { Value, type ValidationEvent, type ValueProps, type ValidationType } from '$lib'
 	import type { Snippet } from 'svelte'
 	import { isMin } from './min'
 	import { isMax } from './max'
@@ -17,9 +17,9 @@
 	}
 	
 	let { 
-		children: slot, 
-		type, 
 		value = $bindable(),
+		children: slot,
+		type, 
 
 		min, max, required,
 
@@ -27,7 +27,8 @@
 	}: Props = $props()
 
 	let valueComponent: Value<any>
-	export const validate = (...args: Parameters<typeof valueComponent.validate>) => valueComponent.validate(...args)
+	export const validate = (type: ValidationType = 'force') => valueComponent.validate(type)
+	export const submit = () => valueComponent.submit()
 
 	function onValidate(e: ValidationEvent<any>) {
 		if(e.trigger.blur) {

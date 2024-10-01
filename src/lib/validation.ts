@@ -32,3 +32,5 @@ export interface ValidationMessage<T> {
 }
 
 export type ValidationFn = (validationEvent: ValidationEvent<any>) => void
+
+export type ValidationType = keyof ValidationEvent<any>['trigger'] | 'force'

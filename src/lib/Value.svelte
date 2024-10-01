@@ -9,7 +9,7 @@
 
 <script lang='ts'>
 	import { getContext, onDestroy, tick, untrack, type Snippet } from 'svelte'
-	import type { ValidationEvent, ValidationMessage } from './validation'
+	import type { ValidationEvent, ValidationMessage, ValidationType } from './validation'
 	
 	type T = $$Generic
 	
@@ -40,7 +40,7 @@
 	let prevValidation = null as boolean | null
 
 	/** Returrns `true` if `valid` */
-	export function validate(trigger: keyof ValidationEvent<T>['trigger'] | 'force') {
+	export function validate(trigger: ValidationType = 'force') {
 		if(prevValidation !== null) return prevValidation
 		tick().then(() => prevValidation = null)
 
@@ -89,13 +89,17 @@
 		}
 	}
 
+	export function submit() {
+		object?.submit()
+	}
+
 	function submitOnEnter(element: HTMLElement) {
 		const fn = (e: KeyboardEvent) => {
 			const target = e.target as HTMLInputElement | HTMLTextAreaElement
 			if(target.tagName === 'TEXTAREA')
 				return
 			if(e.key === 'Enter') {
-				object?.submit()
+				submit()
 				e.preventDefault()
 			}
 		}

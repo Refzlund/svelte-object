@@ -20,7 +20,7 @@
 <script lang='ts'>
 	import { getContext, onDestroy, setContext, untrack, type Snippet } from 'svelte'
 	import deepEqual from 'fast-deep-equal'
-	import type { ValidationEvent, ValidationFn } from './validation'
+	import type { ValidationEvent, ValidationFn, ValidationType } from './validation'
 
 	type T = $$Generic<Record<PropertyKey, any>>
 
@@ -145,7 +145,7 @@
 	setContext('svelte-object', self)
 	
 	/** Validates all values deeply within the object. Returns `true` if `valid` */
-	export function validate(trigger: keyof ValidationEvent<any>['trigger'] | 'force') {
+	export function validate(trigger: ValidationType = 'force') {
 		let valid = true
 		for(const fn of validators) {
 			let result = fn(trigger)
