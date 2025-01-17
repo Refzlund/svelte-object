@@ -1,4 +1,4 @@
-import type { ValidationEvent } from '$lib'
+import type { ValidationEvent } from '../..'
 
 export function isMin(e: ValidationEvent<number>, min: number | undefined, setToMin?: boolean) {
 	if (typeof e.value !== 'number' || min === undefined || min === null)

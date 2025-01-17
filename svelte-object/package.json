@@ -1,0 +1,46 @@
+{
+	"name": "svelte-object",
+	"version": "2.0.1",
+	"description": "A nested component Svelte 5 Runes pattern for structuring objects/arrays and their properties",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"package": "bun ./build.ts"
+	},
+	"license": "MIT",
+	"repository": "github:refzlund/svelte-object",
+	"homepage": "https://github.com/Refzlund/svelte-object",
+	"bugs": {
+		"url": "https://github.com/Refzlund/svelte-object/labels/bug"
+	},
+	"exports": {
+		".": "./src/index.ts",
+		"./validation": "./src/validation/index.ts",
+		"./validation/number": "./src/validation/number/index.ts",
+		"./validation/string": "./src/validation/string/index.ts"
+	},
+	"files": [
+		"dist"
+	],
+	"peerDependencies": {
+		"svelte": "^5.0.0"
+	},
+	"devDependencies": {
+		"@sveltejs/package": "^2",
+		"svelte": "^5",
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"fast-deep-equal": "^3"
+	},
+	"publishConfig": {
+		"directory": "npm"
+	},
+	"keywords": [
+		"svelte",
+		"nested-components",
+		"type-safe",
+		"typescript",
+		"svelte-store"
+	]
+}
