@@ -3,7 +3,7 @@
 	"scripts": {
 		"app": "cd app && bun run dev",
 		"package": "cd svelte-object && bun run package",
-		"publish": "bun run build && changeset publish"
+		"publish": "bun run package && changeset publish"
 	},
 	"workspaces": [
 		"app",
