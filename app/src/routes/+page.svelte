@@ -1,6 +1,6 @@
 <script lang='ts'>
 	
-	import * as I from '$lib'
+	import * as I from 'svelte-object'
 
 </script>
 

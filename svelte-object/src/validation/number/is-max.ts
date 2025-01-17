@@ -1,4 +1,4 @@
-import type { ValidationEvent } from '$lib'
+import type { ValidationEvent } from '../..'
 
 export function isMax(e: ValidationEvent<number>, max: number | undefined, setToMax?: boolean) {
 	if (typeof e.value !== 'number' || max === undefined || max === null)

@@ -39,7 +39,7 @@ This could be your code <sup><a href='https://svelte-5-preview.vercel.app/#H4sIA
 
 <br>
 
-> **Note**  
+> [!NOTE]  
 > What are you waiting for? [Get Started](https://github.com/Refzlund/svelte-object/wiki/Basic-Usage)!
 
 <br>

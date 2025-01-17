@@ -1,4 +1,4 @@
-import type { ValidationEvent } from '$lib'
+import type { ValidationEvent } from '..'
 
 export function isRequired(e: ValidationEvent<number | string>, required?: boolean) {
 	if(!required) return
