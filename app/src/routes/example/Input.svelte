@@ -1,13 +1,13 @@
 <script lang='ts'>
 	
-	import { Value, type ValidationEvent, type ValueProps, type ValidationType } from '$lib'
+	import I, { type ValidationEvent, type ValueProps, type ValidationType, type SvelteValue } from 'svelte-object'
 	import type { Snippet } from 'svelte'
-	import * as str from '$lib/validation/string'
-	import * as num from '$lib/validation/number'
-	import { isRequired } from '$lib/validation/is-required'
+	import * as str from 'svelte-object/validation/string'
+	import * as num from 'svelte-object/validation/number'
+	import { isRequired } from 'svelte-object/validation'
 
 	interface Props extends ValueProps {
-		children?: Snippet,
+		children?: Snippet
 		type?: HTMLInputElement['type']
 
 		/** Validation */
@@ -26,10 +26,11 @@
 		...rest
 	}: Props = $props()
 
-	let valueComponent: Value<any>
+	let valueComponent: SvelteValue<unknown>
 	export const validate = (type: ValidationType = 'force') => valueComponent.validate(type)
 	export const submit = () => valueComponent.submit()
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	function onValidate(e: ValidationEvent<any>) {
 		if(e.trigger.blur) {
 			isRequired(e, required)
@@ -45,11 +46,20 @@
 </script>
 
 
-<Value bind:this={valueComponent} bind:value {...rest} {onValidate}>
+<I.Value
+	bind:this={valueComponent}
+	{onValidate}
+	bind:value
+	{...rest}
+>
 	{#snippet children(prop)}
 		<div use:prop.blurValidation use:prop.submitOnEnter>
 			<label>{@render slot?.()} {#if required}*{/if}</label>
-			<input disabled={prop.attributes?.disabled} {type} bind:value={prop.value}>
+			<input
+				disabled={prop.attributes?.disabled}
+				{type}
+				bind:value={prop.value}
+			>
 			{#if prop.error}
 				<div class='error'>{prop.error.message}</div>
 			{/if}
@@ -58,7 +68,7 @@
 			{/if}
 		</div>
 	{/snippet}
-</Value>
+</I.Value>
 
 
 <style>

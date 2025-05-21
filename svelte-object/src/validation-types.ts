@@ -1,6 +1,9 @@
 export type ValidationEvent<T> = {
 	/** What triggered the validation? When force, both will be true */
-	trigger: { blur: boolean, change: boolean }
+	trigger: {
+		blur: boolean
+		change: boolean 
+	}
 	/** If value is set `e.value = ...` then the value will be transformed */
 	value: T | null | undefined
 	/** Skip further validation checking */
@@ -31,4 +34,4 @@ export interface ValidationMessage<T> {
 	updateMessage?: (value: T | null | undefined) => string
 }
 
-export type ValidationType = keyof ValidationEvent<any>['trigger'] | 'force'
+export type ValidationType = keyof ValidationEvent<unknown>['trigger'] | 'force'

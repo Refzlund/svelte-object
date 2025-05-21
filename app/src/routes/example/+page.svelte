@@ -1,10 +1,12 @@
 <script lang='ts'>
 	
-	import * as I from '$lib'
+	import I from 'svelte-object'
 	import Input from './Input.svelte'
 	
-	let obj = $state({ age: 11 }) as any
-	let arr = $state(undefined) as any
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	let obj = $state({ age: 11 }) as Record<string, any>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	let arr = $state(undefined) as unknown as any[]
 
 	let attr = $state({ disabled: false })
 
@@ -24,18 +26,34 @@
 
 <form>
 
-	<I.Object bind:value={obj} bind:attributes={attr} onSubmit={(v) => { console.log('submitted', $state.snapshot(v)) }}>
+	<I.Object
+		onSubmit={(v) => { console.log('submitted', $state.snapshot(v)) }}
+		bind:value={obj}
+		bind:attributes={attr}
+	>
 		{JSON.stringify(attr)}
 		<button onclick={() => attr.disabled = !attr.disabled}>c</button>
-		<Input required bind:value={obj.name} min={3}>Name</Input>
-		<Input type='number' name='age' min={18}>Age</Input>
+		<Input
+			min={3}
+			required
+			bind:value={obj.name}
+		>Name</Input>
+		<Input
+			name='age'
+			min={18}
+			type='number'
+		>Age</Input>
 		<div class='array'>
 			<button onclick={() => arr.push({})}>Add</button>
 			<I.Array name='array' bind:value={arr}>
 				{#snippet item(prop)}
 					<div class='item'>
 						<I.Object bind:value={prop.value}>
-							<Input name='a' min={2} required>A</Input>
+							<Input
+								name='a'
+								min={2}
+								required
+							>A</Input>
 							<Input bind:value={prop.value.a}>A</Input>
 							<Input name='b'>B</Input>
 						</I.Object>

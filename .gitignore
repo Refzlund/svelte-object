@@ -1,4 +1,5 @@
-node_modules
+**/node_modules
+**/_package
 
 # Output
 .output
@@ -6,8 +7,6 @@ node_modules
 .netlify
 .wrangler
 .svelte-kit
-/build
-/dist
 
 # OS
 .DS_Store

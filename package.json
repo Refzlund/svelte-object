@@ -3,16 +3,23 @@
 	"scripts": {
 		"app": "cd app && bun run dev",
 		"package": "cd svelte-object && bun run package",
-		"publish": "bun run package && changeset publish"
+		"publish": "bun run package && changeset publish",
+		"format": "bun --bun eslint --config ./eslint.config.ts --rule 'unused-imports/no-unused-imports: [warn]' --fix . "
 	},
+	"type": "module",
 	"workspaces": [
 		"app",
 		"svelte-object"
 	],
 	"devDependencies": {
 		"@changesets/cli": "^2.26.2",
+		"@refzlund/repo": "github:refzlund/repo#next",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
 		"@types/bun": "^1.1.14",
-		"@types/node": "^22.10.2"
+		"@types/node": "^22.10.2",
+		"bun": "^1.2.13"
+	},
+	"publishConfig": {
+		"directory": "svelte-object/_package"
 	}
 }
