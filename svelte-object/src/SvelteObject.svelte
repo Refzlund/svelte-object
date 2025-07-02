@@ -1,7 +1,10 @@
-<script module lang='ts'>
+<script lang='ts' module>
 
-	export interface Props<T extends Record<PropertyKey, any> | any[]> {
-		children?: Snippet<[{ value: T, attributes: Record<PropertyKey, any> }]>
+	export interface Props<T extends Record<PropertyKey, unknown> | unknown[]> {
+		children?: Snippet<[{
+			value: T
+			attributes: Record<PropertyKey, unknown> 
+		}]>
 		name?: string | number
 		value?: T
 
@@ -10,9 +13,24 @@
 		/** Whether there's a difference between the modified and unmodified */
 		modified?: boolean
 
-		attributes?: Record<PropertyKey, any>
+		attributes?: Record<PropertyKey, unknown>
 
 		onSubmit?: (value: T) => void
+	}
+
+	type SvelteObjectGeneric = Record<PropertyKey, unknown> | unknown[]
+	type SvelteObjectContext<T extends SvelteObjectGeneric = SvelteObjectGeneric> = {
+		setValue(key: string | number, newValue: unknown): void
+		addValidator(fn: (trigger?: ValidationType) => boolean): void
+		removeValidator(fn: (trigger?: ValidationType) => boolean): void
+		submit: () => void
+		validate: (trigger?: ValidationType) => boolean
+		value: T | undefined
+		attributes: Record<string, unknown>
+	}
+
+	export function getContextSvelteObject() {
+		return getContext('svelte-object') as SvelteObjectContext
 	}
 
 </script>
@@ -22,7 +40,7 @@
 	import deepEqual from 'fast-deep-equal'
 	import type { ValidationType } from './validation-types'
 
-	type T = $$Generic<Record<PropertyKey, any>>
+	type T = $$Generic<SvelteObjectGeneric>
 
 	let v = $state({}) as T | undefined
 	
@@ -30,7 +48,6 @@
 		children: slot,
 		
 		name = '',
-		// svelte-ignore state_referenced_locally
 		value = $bindable(),
 
 		origin,
@@ -41,7 +58,6 @@
 		onSubmit
 	}: Props<T> = $props()
 	
-	// svelte-ignore state_referenced_locally
 	v = value
 	v ??= {} as T
 	
@@ -50,8 +66,12 @@
 
 	let object = getContext('svelte-object') as typeof self
 	
-	function createAttributeProxy(): { value: Record<PropertyKey, any> } {
-		let target = $state({ ...object?.attributes, ...attributes })
+	function createAttributeProxy(): { value: Record<PropertyKey, unknown> } {
+		/* eslint-disable-next-line svelte/prefer-writable-derived */
+		let target = $state({
+			...object?.attributes,
+			...attributes 
+		})
 
 		let attributeProxy = $derived(new Proxy(target, {
 			set(target, key, value) {
@@ -62,7 +82,10 @@
 		}))
 
 		$effect.pre(() => {
-			target = { ...object?.attributes, ...attributes }
+			target = {
+				...object?.attributes,
+				...attributes 
+			}
 		})
 
 		return { 
@@ -76,10 +99,10 @@
 	let validators = [] as (typeof validate)[]
 
 	const self = {
-		setValue(key: string | number, newValue: any) {
+		setValue(key: string | number, newValue: unknown) {
 			if(key === undefined || key === null || key === '')
 				return
-			value![key as keyof T] = newValue
+			value![key as keyof T] = newValue as T[keyof T]
 			if(object && name !== '')
 				object.setValue(name, value)
 		},
@@ -98,8 +121,8 @@
 		set value(newValue) { value = newValue },
 
 		get attributes() { return attributeProxy.value },
-		set attributes(newValue) { attributes = newValue },
-	}
+		set attributes(newValue) { attributes = newValue }
+	} satisfies SvelteObjectContext
 
 	export function submit() {
 		if(onSubmit) {
@@ -112,11 +135,12 @@
 	}
 
 	if(object && (name !== undefined && name !== null) && name !== '') {
-		if(object?.value?.[name])
+		if(object?.value?.[name]) {
 			value = object?.value[name] as T
-		else
-			// @ts-expect-error Annoin'
-			object.value[name] = value
+		}
+		else {
+			object.value![name] = value
+		}
 	}
 
 	let checkingIsModified = false
@@ -133,7 +157,9 @@
 
 	const setValue = (v: T) => Object.assign(value!, v)
 	$effect.pre(() => {
-		object?.value && setValue(object.value[name] as T)
+		if(object?.value) {
+			setValue(object.value[name] as T)
+		}
 	})
 
 	$effect(() => {
@@ -164,5 +190,5 @@
 	get value() { return value! }, 
 	set value(newValue) { value = newValue },
 	get attributes() { return self.attributes },
-	set attributes(newValue) {  self.attributes = newValue }
+	set attributes(newValue) { self.attributes = newValue }
 })}

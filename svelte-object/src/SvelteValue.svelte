@@ -1,4 +1,4 @@
-<script module lang='ts'>
+<script lang='ts' module>
 	
 	export interface Props<T = unknown> {
 		name?: string | number
@@ -8,12 +8,13 @@
 </script>
 
 <script lang='ts'>
-	import { getContext, onDestroy, tick, untrack, type Snippet } from 'svelte'
+	import { onDestroy, tick, untrack, type Snippet } from 'svelte'
 	import type { ValidationEvent, ValidationMessage, ValidationType } from './validation-types'
+	import { getContextSvelteObject } from './SvelteObject.svelte'
 	
 	type T = $$Generic
 	
-	const object = getContext('svelte-object') as any
+	const object = getContextSvelteObject()
 
 	let {
 		children: slot,
@@ -23,11 +24,12 @@
 	}: Props<T> & { 
 		onValidate?: (validationEvent: ValidationEvent<T>) => void
 		children?: Snippet<[{ 
-			value: Props<T>['value'],
-			blurValidation: (element: HTMLElement) => { destroy: () => void },
-			submitOnEnter: (element: HTMLElement) => { destroy: () => void },
-			attributes?: Record<PropertyKey, any>,
-			error?: | { message: string },
+			value: Props<T>['value']
+			blurValidation: (element: HTMLElement) => { destroy: () => void }
+			submitOnEnter: (element: HTMLElement) => { destroy: () => void }
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			attributes?: Record<PropertyKey, any>
+			error?: | { message: string }
 			warning?: | { message: string }
 		}]>
 	} = $props()
@@ -53,16 +55,24 @@
 				get value() { return value },
 				set value(newValue) { value = newValue },
 				skip: () => { throw new Validated() },
-				error: (m,s,u) => {
+				error: (m, s, u) => {
 					if(error === undefined) {
 						warning = undefined
-						error = { message: m, keepMessage: s, updateMessage: u }
+						error = {
+							message: m,
+							keepMessage: s,
+							updateMessage: u 
+						}
 					}
 					throw new Errored()
 				},
-				warning: (m,s,u) => {
+				warning: (m, s, u) => {
 					if(error === undefined)
-						warning = { message: m, keepMessage: s, updateMessage: u }
+						warning = {
+							message: m,
+							keepMessage: s,
+							updateMessage: u 
+						}
 					throw new Validated()
 				}
 			})
@@ -115,14 +125,17 @@
 	const setValue = (v: T) => value = v
 
 	if(object && (name !== undefined && name !== null) && name !== '') {
-		const val = object.value[name!]
+		const val = object.value![name!]
 		if(val !== undefined)
 			setValue(val)
 	}
 	
 	$effect(() => {
-		object?.value && name !== '' && setValue(object.value[name!])
+		if(object?.value && name !== '') {
+			setValue(object.value[name!])
+		}
 	})
+	
 	$effect.pre(() => {
 		value
 

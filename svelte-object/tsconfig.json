@@ -1,15 +1,8 @@
 {
+	"extends": "@refzlund/repo/tsconfig.base.json",
+	"exclude": ["_package", "svelte.config.js"],
 	"compilerOptions": {
-		"lib": ["ESNext", "DOM", "DOM.Iterable", "DOM.AsyncIterable"],
-		"noImplicitAny": false,
-		"strict": true,
-		"allowJs": true,
-		"checkJs": true,
-		"esModuleInterop": true,
-		"isolatedModules": true,
-		"target": "ESNext",
-		"module": "ESNext",
-		"moduleResolution": "bundler"
-	},
-	"exclude": ["npm", "svelte.config.js"]
+		"declaration": true,
+		"isolatedDeclarations": false
+	}
 }

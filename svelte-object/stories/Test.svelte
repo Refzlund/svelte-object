@@ -1,6 +1,6 @@
 <script lang='ts'>
 	
-	import * as I from 'svelte-object'
+	import I from '../src/index.svelte'
 
 </script>
 
@@ -9,7 +9,7 @@
 		
 		<I.Array name='arr'>
 			{#snippet children({ value: arr })}
-				{#each arr as item, j}
+				{#each arr as item, j (item)}
 					<I.Object name={j}>
 						<div>
 							<I.Value name='name' value='Lillemis'>
