@@ -1,5 +1,13 @@
 # svelte-object
 
+## 2.0.4
+
+### Patch Changes
+
+- chore: storybook ([#30](https://github.com/Refzlund/svelte-object/pull/30))
+
+- chore: renaming Svelte files ([#30](https://github.com/Refzlund/svelte-object/pull/30))
+
 ## 2.0.3
 
 ### Patch Changes
