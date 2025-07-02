@@ -1,10 +1,10 @@
 <script lang='ts'>
 	
-	import I, { type ValidationEvent, type ValueProps, type ValidationType, type SvelteValue } from 'svelte-object'
+	import I, { type ValidationEvent, type ValueProps, type ValidationType, type SvelteValue } from '../src/index.svelte'
 	import type { Snippet } from 'svelte'
-	import * as str from 'svelte-object/validation/string'
-	import * as num from 'svelte-object/validation/number'
-	import { isRequired } from 'svelte-object/validation'
+	import * as str from '../src/validation/string'
+	import * as num from '../src/validation/number'
+	import { isRequired } from '../src/validation'
 
 	interface Props extends ValueProps {
 		children?: Snippet

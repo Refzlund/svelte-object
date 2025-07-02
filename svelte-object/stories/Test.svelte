@@ -1,6 +1,6 @@
 <script lang='ts'>
 	
-	import I from 'svelte-object'
+	import I from '../src/index.svelte'
 
 </script>
 

@@ -1,4 +1,8 @@
 {
 	"extends": "@refzlund/repo/tsconfig.base.json",
-	"exclude": ["_package", "svelte.config.js"]
+	"exclude": ["_package", "svelte.config.js"],
+	"compilerOptions": {
+		"declaration": true,
+		"isolatedDeclarations": false
+	}
 }

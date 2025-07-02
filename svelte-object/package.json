@@ -5,7 +5,7 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"package": "bunx repo-package"
+		"package": "bunx repo-pack"
 	},
 	"license": "MIT",
 	"repository": "github:refzlund/svelte-object",
@@ -14,14 +14,14 @@
 		"url": "https://github.com/Refzlund/svelte-object/labels/bug"
 	},
 	"exports": {
-		".": "./src/index.ts",
+		".": "./src/index.svelte.ts",
 		"./validation": "./src/validation/index.ts",
 		"./validation/number": "./src/validation/number/index.ts",
 		"./validation/string": "./src/validation/string/index.ts"
 	},
 	"files": [],
 	"peerDependencies": {
-		"svelte": "^5.0.0"
+		"svelte": "^5"
 	},
 	"devDependencies": {
 		"@sveltejs/package": "^2",

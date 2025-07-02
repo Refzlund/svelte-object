@@ -1,7 +1,7 @@
 <script lang='ts'>
 	
-	import I from 'svelte-object'
-	import Input from './Input.svelte'
+	import I from '../src/index.svelte'
+	import Input from './InputExample.Input.svelte'
 	
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let obj = $state({ age: 11 }) as Record<string, any>

@@ -1,5 +1,5 @@
 <script lang='ts'>
-	import type { ObjectProps } from '.'
+	import type { ObjectProps } from './index.svelte'
 	import Object from './SvelteObject.svelte'
 	import { type Snippet } from 'svelte'
 

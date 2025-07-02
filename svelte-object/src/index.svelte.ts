@@ -10,6 +10,10 @@ const I = {
 	Array: SvelteArray,
 	Value: SvelteValue,
 	Object: SvelteObject
+} as {
+	Array: typeof SvelteArray
+	Value: typeof SvelteValue
+	Object: typeof SvelteObject
 }
 
 export type { default as SvelteArray } from './SvelteArray.svelte'
