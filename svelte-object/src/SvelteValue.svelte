@@ -23,7 +23,7 @@
 		onValidate
 	}: Props<T> & { 
 		onValidate?: (validationEvent: ValidationEvent<T>) => void
-		children?: Snippet<[{ 
+		children?: Snippet<[props: { 
 			value: Props<T>['value']
 			blurValidation: (element: HTMLElement) => { destroy: () => void }
 			submitOnEnter: (element: HTMLElement) => { destroy: () => void }

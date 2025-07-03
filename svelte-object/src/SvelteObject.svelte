@@ -1,11 +1,12 @@
 <script lang='ts' module>
 
 	export interface Props<T extends Record<PropertyKey, unknown> | unknown[]> {
-		children?: Snippet<[{
+		children?: Snippet<[props: {
 			value: T
 			attributes: Record<PropertyKey, unknown> 
 		}]>
 		name?: string | number
+		default?: T
 		value?: T
 
 		/** What the unmodified object is */
@@ -42,12 +43,11 @@
 
 	type T = $$Generic<SvelteObjectGeneric>
 
-	let v = $state({}) as T | undefined
-	
 	let {
 		children: slot,
 		
 		name = '',
+		default: defaultvalue,
 		value = $bindable(),
 
 		origin,
@@ -58,18 +58,16 @@
 		onSubmit
 	}: Props<T> = $props()
 	
-	v = value
-	v ??= {} as T
-	
-	// svelte-ignore state_referenced_locally
-	value = v
+	$effect.pre(() => {
+		value ??= defaultvalue ?? {} as T
+	})
 
-	let object = getContext('svelte-object') as typeof self
+	let parent = getContext('svelte-object') as typeof self
 	
 	function createAttributeProxy(): { value: Record<PropertyKey, unknown> } {
 		/* eslint-disable-next-line svelte/prefer-writable-derived */
 		let target = $state({
-			...object?.attributes,
+			...parent?.attributes,
 			...attributes 
 		})
 
@@ -83,7 +81,7 @@
 
 		$effect.pre(() => {
 			target = {
-				...object?.attributes,
+				...parent?.attributes,
 				...attributes 
 			}
 		})
@@ -103,8 +101,8 @@
 			if(key === undefined || key === null || key === '')
 				return
 			value![key as keyof T] = newValue as T[keyof T]
-			if(object && name !== '')
-				object.setValue(name, value)
+			if(parent && name !== '')
+				parent.setValue(name, value)
 		},
 
 		addValidator(fn: typeof validate) {
@@ -131,15 +129,15 @@
 			}
 		}
 		else
-			object?.submit()
+			parent?.submit()
 	}
 
-	if(object && (name !== undefined && name !== null) && name !== '') {
-		if(object?.value?.[name]) {
-			value = object?.value[name] as T
+	if(parent && (name !== undefined && name !== null) && name !== '') {
+		if(parent?.value?.[name]) {
+			value = parent?.value[name] as T
 		}
 		else {
-			object.value![name] = value
+			parent.value![name] = value
 		}
 	}
 
@@ -157,8 +155,8 @@
 
 	const setValue = (v: T) => Object.assign(value!, v)
 	$effect.pre(() => {
-		if(object?.value) {
-			setValue(object.value[name] as T)
+		if(parent?.value) {
+			setValue(parent.value[name] as T)
 		}
 	})
 
@@ -181,8 +179,8 @@
 		return valid
 	}
 
-	object?.addValidator?.(validate)
-	onDestroy(() => object?.removeValidator?.(validate))
+	parent?.addValidator?.(validate)
+	onDestroy(() => parent?.removeValidator?.(validate))
 
 </script>
 
