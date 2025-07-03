@@ -105,6 +105,16 @@
 				parent.setValue(name, value)
 		},
 
+		addPrescriptors(
+			name: PropertyKey,
+			getter: () => unknown,
+			setter: (value: unknown) => void,
+		) {
+
+		},
+		
+		prescriptors: Record<PropertyKey, { get: () => unknown, set: (value: unknown) => void }> = {},
+
 		addValidator(fn: typeof validate) {
 			validators.push(fn)
 		},
