@@ -19,9 +19,15 @@
 		onSubmit?: (value: T) => void
 	}
 
+	type Prescriptor = { name: PropertyKey, get: () => unknown, set: (value: unknown) => void }
+
 	type SvelteObjectGeneric = Record<PropertyKey, unknown> | unknown[]
 	type SvelteObjectContext<T extends SvelteObjectGeneric = SvelteObjectGeneric> = {
-		setValue(key: string | number, newValue: unknown): void
+		addPrescriptor: (
+			name: Prescriptor['name'],
+			getter: Prescriptor['get'],
+			setter: Prescriptor['set']
+		) => void
 		addValidator(fn: (trigger?: ValidationType) => boolean): void
 		removeValidator(fn: (trigger?: ValidationType) => boolean): void
 		submit: () => void
@@ -96,25 +102,41 @@
 
 	let validators = [] as (typeof validate)[]
 
-	const self = {
-		setValue(key: string | number, newValue: unknown) {
-			if(key === undefined || key === null || key === '')
-				return
-			value![key as keyof T] = newValue as T[keyof T]
-			if(parent && name !== '')
-				parent.setValue(name, value)
-		},
+	const prescriptors: Prescriptor[] = $state([])
 
-		addPrescriptors(
+	$effect.pre(() => {
+		for(const prescriptor of prescriptors) {
+			$effect.pre(() => {
+				prescriptor.set(value?.[prescriptor.name])
+			})
+			$effect.pre(() => {
+				const itemValue = prescriptor.get()
+				value ??= {} as T
+				prescriptor.name
+				untrack(() => {
+					value ??= {} as T
+					value[prescriptor.name] = itemValue
+				})
+			})
+		}
+	})
+
+	const self = {
+		addPrescriptor(
 			name: PropertyKey,
 			getter: () => unknown,
 			setter: (value: unknown) => void,
 		) {
+			const prescriptor = { name, get: getter, set: setter }
 
+			value ??= {} as T
+			value[prescriptor.name] = getter()
+
+			prescriptors.push(prescriptor)
+			return () => {
+				prescriptors.splice(prescriptors.indexOf(prescriptor), 1)
+			}
 		},
-		
-		prescriptors: Record<PropertyKey, { get: () => unknown, set: (value: unknown) => void }> = {},
-
 		addValidator(fn: typeof validate) {
 			validators.push(fn)
 		},
@@ -143,12 +165,7 @@
 	}
 
 	if(parent && (name !== undefined && name !== null) && name !== '') {
-		if(parent?.value?.[name]) {
-			value = parent?.value[name] as T
-		}
-		else {
-			parent.value![name] = value
-		}
+		parent.addPrescriptor(name, () => value, v => value = v as T)
 	}
 
 	let checkingIsModified = false
@@ -162,13 +179,6 @@
 			modified = !deepEqual($state.snapshot(value), $state.snapshot(origin))
 		}, 125)
 	}
-
-	const setValue = (v: T) => Object.assign(value!, v)
-	$effect.pre(() => {
-		if(parent?.value) {
-			setValue(parent.value[name] as T)
-		}
-	})
 
 	$effect(() => {
 		$state.snapshot(value)
