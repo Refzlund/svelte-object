@@ -6,7 +6,7 @@ export { type Props as ObjectProps } from './SvelteObject.svelte'
 export { type Props as ValueProps } from './SvelteValue.svelte'
 export type { ValidationEvent, ValidationType } from './validation-types'
 
-const I = {
+const O = {
 	Array: SvelteArray,
 	Value: SvelteValue,
 	Object: SvelteObject
@@ -20,4 +20,9 @@ export type { default as SvelteArray } from './SvelteArray.svelte'
 export type { default as SvelteObject } from './SvelteObject.svelte'
 export type { default as SvelteValue } from './SvelteValue.svelte'
 
-export default I
+export default O
+export {
+	SvelteArray as Array,
+	SvelteObject as Object,
+	SvelteValue as Value
+}
