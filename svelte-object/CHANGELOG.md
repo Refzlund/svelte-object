@@ -1,5 +1,11 @@
 # svelte-object
 
+## 2.0.5
+
+### Patch Changes
+
+- fix: overriding parent values breaks reactivity ([#32](https://github.com/Refzlund/svelte-object/pull/32))
+
 ## 2.0.4
 
 ### Patch Changes
