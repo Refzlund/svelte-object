@@ -19,7 +19,11 @@
 		onSubmit?: (value: T) => void
 	}
 
-	type Prescriptor = { name: PropertyKey, get: () => unknown, set: (value: unknown) => void }
+	type Prescriptor = {
+		name: PropertyKey,
+		get: () => unknown,
+		set: (value: unknown) => void
+	}
 
 	type SvelteObjectGeneric = Record<PropertyKey, unknown> | unknown[]
 	type SvelteObjectContext<T extends SvelteObjectGeneric = SvelteObjectGeneric> = {
@@ -43,7 +47,7 @@
 </script>
 
 <script lang='ts'>
-	import { getContext, onDestroy, setContext, untrack, type Snippet } from 'svelte'
+	import { getContext, onDestroy, setContext, tick, untrack, type Snippet } from 'svelte'
 	import deepEqual from 'fast-deep-equal'
 	import type { ValidationType } from './validation-types'
 
@@ -106,13 +110,29 @@
 
 	$effect.pre(() => {
 		for(const prescriptor of prescriptors) {
+			let debounced = false
+			let debouncer = () => {
+				if(debounced) return true
+				debounced = true
+				tick().then(() => debounced = false)
+				return false
+			}
+
 			$effect.pre(() => {
-				prescriptor.set(value?.[prescriptor.name])
+				let itemValue = value?.[prescriptor.name]
+				// Prevent infinite recursion
+				if(debouncer()) return
+				
+				untrack(() => {
+					prescriptor.set(itemValue)
+				})
 			})
 			$effect.pre(() => {
-				const itemValue = prescriptor.get()
-				value ??= {} as T
+				let itemValue = prescriptor.get()
 				prescriptor.name
+
+				// Always allow sending the value to the parent to sustain reactivity
+				debouncer()
 				untrack(() => {
 					value ??= {} as T
 					value[prescriptor.name] = itemValue
@@ -125,7 +145,7 @@
 		addPrescriptor(
 			name: PropertyKey,
 			getter: () => unknown,
-			setter: (value: unknown) => void,
+			setter: (value: unknown) => void
 		) {
 			const prescriptor = { name, get: getter, set: setter }
 
