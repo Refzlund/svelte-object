@@ -23,7 +23,7 @@
 		onValidate
 	}: Props<T> & { 
 		onValidate?: (validationEvent: ValidationEvent<T>) => void
-		children?: Snippet<[{ 
+		children?: Snippet<[props: { 
 			value: Props<T>['value']
 			blurValidation: (element: HTMLElement) => { destroy: () => void }
 			submitOnEnter: (element: HTMLElement) => { destroy: () => void }
@@ -122,19 +122,9 @@
 	object?.addValidator(validate)
 	onDestroy(() => object?.removeValidator(validate))
 
-	const setValue = (v: T) => value = v
-
 	if(object && (name !== undefined && name !== null) && name !== '') {
-		const val = object.value![name!]
-		if(val !== undefined)
-			setValue(val)
+		object.addPrescriptor(name, () => value, v => value = v as T)
 	}
-	
-	$effect(() => {
-		if(object?.value && name !== '') {
-			setValue(object.value[name!])
-		}
-	})
 	
 	$effect.pre(() => {
 		value
@@ -146,7 +136,6 @@
 				warning = undefined
 			validate('change')
 		})
-		untrack(() => object?.setValue(name, value))
 	})
 	
 </script>

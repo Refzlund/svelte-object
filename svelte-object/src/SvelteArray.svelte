@@ -1,23 +1,26 @@
-<script lang='ts'>
+<script lang='ts' module>
 	import type { ObjectProps } from './index.svelte'
-	import Object from './SvelteObject.svelte'
-	import { type Snippet } from 'svelte'
 
-	type T = $$Generic<unknown[]>
-	type TItem = T extends Array<infer F> ? F : never
-
-	interface Props extends ObjectProps<T> {
-		item?: Snippet<[{ 
-			value: TItem
+	export interface ArrayProps<T extends unknown[]> extends ObjectProps<T> {
+		item?: Snippet<[props: { 
+			value: T[number]
 			index: Readonly<number>
 			attributes: Record<PropertyKey, unknown>
 		}]>
 	}
+</script>
+
+<script lang='ts'>
+	
+	import Object from './SvelteObject.svelte'
+	import { type Snippet } from 'svelte'
+
+	type T = $$Generic<unknown[]>	
 
 	let objectComponent: Object<T>
 
-	let v = $state([] as unknown[]) as T
 	let {
+		default: defaultvalue,
 		value = $bindable(),
 		
 		name = '',
@@ -26,13 +29,7 @@
 		modified = $bindable(false),
 		attributes = $bindable({}),
 		...rest
-	}: Props = $props()
-
-	v = value!
-	v ??= [] as unknown[] as T
-
-	// svelte-ignore state_referenced_locally
-	value = v
+	}: ArrayProps<T> = $props()
 
 	function push(...v: T[number][]) { 
 		return value?.push(...v)
@@ -55,6 +52,7 @@
 <Object
 	bind:this={objectComponent}
 	{name}
+	default={defaultvalue as T ?? []}
 	bind:value={value as T}
 	bind:modified
 	bind:attributes
@@ -69,7 +67,7 @@
 	{#if item && Array.isArray(value)}
 		{#each value as valueItem, i (typeof valueItem === 'object' ? valueItem : i)}
 			{@render item?.({ 
-				get value() { return valueItem as TItem },
+				get value() { return valueItem as T[number] },
 				set value(newValue) { value![i] = newValue },
 				get index() { return i },
 				get attributes() { return attributes },
