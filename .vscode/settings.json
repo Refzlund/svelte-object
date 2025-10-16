@@ -1,0 +1,9 @@
+{
+	"python-envs.pythonProjects": [
+		{
+			"path": "svelte-object/stories/issues/infinite-recursion",
+			"envManager": "ms-python.python:venv",
+			"packageManager": "ms-python.python:pip"
+		}
+	]
+}

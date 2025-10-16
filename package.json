@@ -22,6 +22,6 @@
 		"directory": "svelte-object/_package"
 	},
 	"dependencies": {
-		"svelte": "^5.35.0"
+		"svelte": "^5.35.2"
 	}
 }

@@ -110,19 +110,8 @@
 
 	$effect.pre(() => {
 		for(const prescriptor of prescriptors) {
-			let debounced = false
-			let debouncer = () => {
-				if(debounced) return true
-				debounced = true
-				tick().then(() => debounced = false)
-				return false
-			}
-
 			$effect.pre(() => {
-				let itemValue = value?.[prescriptor.name]
-				// Prevent infinite recursion
-				if(debouncer()) return
-				
+				let itemValue = value?.[prescriptor.name]				
 				untrack(() => {
 					prescriptor.set(itemValue)
 				})
@@ -131,8 +120,6 @@
 				let itemValue = prescriptor.get()
 				prescriptor.name
 
-				// Always allow sending the value to the parent to sustain reactivity
-				debouncer()
 				untrack(() => {
 					value ??= {} as T
 					value[prescriptor.name] = itemValue
@@ -149,9 +136,16 @@
 		) {
 			const prescriptor = { name, get: getter, set: setter }
 
-			value ??= {} as T
-			value[prescriptor.name] = getter()
-
+			if(value) {
+				const current = value[name]
+				if(current === undefined || current === null) {
+					value[prescriptor.name] = getter()
+				}
+				else {
+					prescriptor.set(current)
+				}
+			}
+			
 			prescriptors.push(prescriptor)
 			return () => {
 				prescriptors.splice(prescriptors.indexOf(prescriptor), 1)
