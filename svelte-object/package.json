@@ -1,6 +1,6 @@
 {
 	"name": "svelte-object",
-	"version": "2.0.7",
+	"version": "2.0.8",
 	"description": "A nested component Svelte 5 Runes pattern for structuring objects/arrays and their properties",
 	"type": "module",
 	"private": true,
