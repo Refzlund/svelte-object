@@ -1,5 +1,8 @@
 {
-	"extends": "@refzlund/repo/tsconfig.base.json",
+	"extends": [
+		"@refzlund/repo/tsconfig.base.json",
+		"./.svelte-kit/tsconfig.json"
+	],
 	"exclude": ["_package", "svelte.config.js"],
 	"compilerOptions": {
 		"declaration": true,
