@@ -1,5 +1,11 @@
 # svelte-object
 
+## 2.0.8
+
+### Patch Changes
+
+- fix: missing values on existing object-value ([#34](https://github.com/Refzlund/svelte-object/pull/34))
+
 ## 2.0.5
 
 ### Patch Changes
