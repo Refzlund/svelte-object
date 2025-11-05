@@ -9,7 +9,14 @@
 		default?: T
 		value?: T
 
-		/** What the unmodified object is */
+		/**
+		 * What the unmodified object is
+		 * 
+		 * Note: Set it with snapshot and untracked;  
+		 * `origin={untrack(() => $state.snapshot(value))}`
+		 * 
+		 * Alternatively, use `object.setOrigin(value)`.
+		*/
 		origin?: T
 		/** Whether there's a difference between the modified and unmodified */
 		modified?: boolean
@@ -60,7 +67,7 @@
 		default: defaultvalue,
 		value = $bindable(),
 
-		origin,
+		origin = $bindable(),
 		modified = $bindable(false),
 
 		attributes = $bindable({}),
@@ -178,18 +185,21 @@
 			parent?.submit()
 	}
 
+	export function setOrigin(newOrigin: T) {
+		untrack(() => origin = $state.snapshot(newOrigin) as any)
+	}
+
 	if(parent && (name !== undefined && name !== null) && name !== '') {
 		parent.addPrescriptor(name, () => value, v => value = v as T)
 	}
 
-	let checkingIsModified = false
+	let modificationTimer: ReturnType<typeof setTimeout> | undefined
 	function isModified() {
 		if(!origin)
 			return modified = false
-		if(checkingIsModified) return
-		checkingIsModified = true
-		setTimeout(() => {
-			checkingIsModified = false
+		if(modificationTimer) return
+		modificationTimer = setTimeout(() => {
+			modificationTimer = undefined
 			modified = !deepEqual($state.snapshot(value), $state.snapshot(origin))
 		}, 125)
 	}
@@ -213,8 +223,15 @@
 		return valid
 	}
 
-	parent?.addValidator?.(validate)
-	onDestroy(() => parent?.removeValidator?.(validate))
+	$effect(() => {
+		if(name !== undefined && name !== null && parent) {
+			parent?.addValidator?.(validate)
+		}
+		else {
+			parent?.removeValidator?.(validate)
+		}
+		return () => parent?.removeValidator?.(validate)
+	})
 
 </script>
 
