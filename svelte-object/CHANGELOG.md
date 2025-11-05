@@ -1,5 +1,17 @@
 # svelte-object
 
+## 2.1.0
+
+### Minor Changes
+
+- feat: add `object.setOrigin(value)` that "untrackingly" takes a snapshot of the `newOrigin`-value and uses it as the new origin. ([#36](https://github.com/Refzlund/svelte-object/pull/36))
+
+### Patch Changes
+
+- fix: validating non-children to object (e.g. unnamed objects/arrays/values) ([#36](https://github.com/Refzlund/svelte-object/pull/36))
+
+- fix: missing values on existing object-value ([#36](https://github.com/Refzlund/svelte-object/pull/36))
+
 ## 2.0.8
 
 ### Patch Changes
