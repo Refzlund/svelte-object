@@ -119,8 +119,16 @@
 		}
 	}
 
-	object?.addValidator(validate)
-	onDestroy(() => object?.removeValidator(validate))
+	$effect(() => {
+		if(name !== undefined && name !== null && object) {
+			object?.addValidator?.(validate)
+		}
+		else {
+			object?.removeValidator?.(validate)
+		}
+		return () => object?.removeValidator?.(validate)
+	})
+
 
 	if(object && (name !== undefined && name !== null) && name !== '') {
 		object.addPrescriptor(name, () => value, v => value = v as T)
