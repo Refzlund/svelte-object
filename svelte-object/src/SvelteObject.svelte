@@ -186,7 +186,7 @@
 	}
 
 	export function setOrigin(newOrigin: T) {
-		origin = untrack(() => $state.snapshot(newOrigin)) as any
+		untrack(() => origin = $state.snapshot(newOrigin) as any)
 	}
 
 	if(parent && (name !== undefined && name !== null) && name !== '') {
