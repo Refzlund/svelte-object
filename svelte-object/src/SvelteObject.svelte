@@ -24,6 +24,9 @@
 		attributes?: Record<PropertyKey, unknown>
 
 		onSubmit?: (value: T) => void
+
+		/** Validate with parent, even if unnamed */
+		withParent?: boolean
 	}
 
 	type Prescriptor = {
@@ -64,6 +67,8 @@
 		children: slot,
 		
 		name = '',
+		withParent = false,
+
 		default: defaultvalue,
 		value = $bindable(),
 
@@ -224,7 +229,7 @@
 	}
 
 	$effect(() => {
-		if(name !== undefined && name !== null && parent) {
+		if(withParent || (name !== undefined && name !== null && name !== '') && parent) {
 			parent?.addValidator?.(validate)
 		}
 		else {

@@ -3,6 +3,8 @@
 	export interface Props<T = unknown> {
 		name?: string | number
 		value?: T | undefined | null
+		/** Validate with parent, even if unnamed */
+		withParent?: boolean
 	}
 
 </script>
@@ -20,6 +22,7 @@
 		children: slot,
 		name = '',
 		value = $bindable(),
+		withParent = false,
 		onValidate
 	}: Props<T> & { 
 		onValidate?: (validationEvent: ValidationEvent<T>) => void
@@ -120,10 +123,9 @@
 	}
 
 	$effect(() => {
-		if(name !== undefined && name !== null && object) {
+		if (object && (withParent || (name !== undefined && name !== null && name !== ''))) {
 			object?.addValidator?.(validate)
-		}
-		else {
+		} else {
 			object?.removeValidator?.(validate)
 		}
 		return () => object?.removeValidator?.(validate)
