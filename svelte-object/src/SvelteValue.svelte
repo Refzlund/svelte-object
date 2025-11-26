@@ -16,6 +16,9 @@
 	
 	type T = $$Generic
 	
+	let removePrescriptor: (() => void) | undefined
+	onDestroy(() => removePrescriptor?.())
+
 	const object = getContextSvelteObject()
 
 	let {
@@ -133,7 +136,7 @@
 
 
 	if(object && (name !== undefined && name !== null) && name !== '') {
-		object.addPrescriptor(name, () => value, v => value = v as T)
+		removePrescriptor = object.addPrescriptor(name, () => value, v => value = v as T)
 	}
 	
 	$effect.pre(() => {

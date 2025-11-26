@@ -41,7 +41,7 @@
 			name: Prescriptor['name'],
 			getter: Prescriptor['get'],
 			setter: Prescriptor['set']
-		) => void
+		) => () => void
 		addValidator(fn: (trigger?: ValidationType) => boolean): void
 		removeValidator(fn: (trigger?: ValidationType) => boolean): void
 		submit: () => void
@@ -62,6 +62,9 @@
 	import type { ValidationType } from './validation-types'
 
 	type T = $$Generic<SvelteObjectGeneric>
+
+	let removePrescriptor: (() => void) | undefined
+	onDestroy(() => removePrescriptor?.())
 
 	let {
 		children: slot,
@@ -118,27 +121,36 @@
 
 	let validators = [] as (typeof validate)[]
 
-	const prescriptors: Prescriptor[] = $state([])
+	// Use $state.raw to get reactivity without deep proxy tracking
+	// This avoids proxy equality issues when using indexOf/findIndex
+	let prescriptors = $state.raw<Array<Prescriptor & { removed?: boolean }>>([])
 
-	$effect.pre(() => {
-		for(const prescriptor of prescriptors) {
+	// Each prescriptor creates its own effects via $effect.root
+	// This allows proper cleanup when the prescriptor is removed
+	function createPrescriptorEffects(prescriptor: Prescriptor & { removed?: boolean }) {
+		return $effect.root(() => {
+			// Sync from parent value to child
 			$effect.pre(() => {
-				let itemValue = value?.[prescriptor.name]				
+				if (prescriptor.removed) return
+				let itemValue = value?.[prescriptor.name]
 				untrack(() => {
+					if (prescriptor.removed) return
 					prescriptor.set(itemValue)
 				})
 			})
+			// Sync from child to parent value
 			$effect.pre(() => {
+				if (prescriptor.removed) return
 				let itemValue = prescriptor.get()
-				prescriptor.name
 
 				untrack(() => {
+					if (prescriptor.removed) return
 					value ??= {} as T
 					value[prescriptor.name] = itemValue
 				})
 			})
-		}
-	})
+		})
+	}
 
 	const self = {
 		addPrescriptor(
@@ -146,7 +158,7 @@
 			getter: () => unknown,
 			setter: (value: unknown) => void
 		) {
-			const prescriptor = { name, get: getter, set: setter }
+			const prescriptor: Prescriptor & { removed?: boolean } = { name, get: getter, set: setter }
 
 			if(value) {
 				const current = value[name]
@@ -158,9 +170,14 @@
 				}
 			}
 			
-			prescriptors.push(prescriptor)
+			// Create effects for this prescriptor with manual cleanup
+			const cleanupEffects = createPrescriptorEffects(prescriptor)
+			
+			prescriptors = [...prescriptors, prescriptor]
 			return () => {
-				prescriptors.splice(prescriptors.indexOf(prescriptor), 1)
+				prescriptor.removed = true
+				cleanupEffects()
+				prescriptors = prescriptors.filter(p => p !== prescriptor)
 			}
 		},
 		addValidator(fn: typeof validate) {
@@ -195,7 +212,7 @@
 	}
 
 	if(parent && (name !== undefined && name !== null) && name !== '') {
-		parent.addPrescriptor(name, () => value, v => value = v as T)
+		removePrescriptor = parent.addPrescriptor(name, () => value, v => value = v as T)
 	}
 
 	let modificationTimer: ReturnType<typeof setTimeout> | undefined
