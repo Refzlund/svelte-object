@@ -1,5 +1,11 @@
 # svelte-object
 
+## 2.1.3
+
+### Patch Changes
+
+- fix(prescriptor): properly clean up prescriptor effects on removal ([#39](https://github.com/Refzlund/svelte-object/pull/39))
+
 ## 2.1.0
 
 ### Minor Changes
