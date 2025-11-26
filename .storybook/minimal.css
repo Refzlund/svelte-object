@@ -1,0 +1,24 @@
+.sidebar-header > *:not(:has(> button)) {
+	display: none;
+}
+
+:has(> .sidebar-header) {
+	display: grid;
+
+	grid-template-areas:
+		'sidebar-search sidebar-header'
+		'sidebar-menu sidebar-menu';
+
+	> .sidebar-header {
+		grid-area: sidebar-header;
+	}
+
+	> #storybook-explorer-menu {
+		grid-area: sidebar-menu;
+	}
+
+	> :has(.search-field) {
+		grid-area: sidebar-search;
+	}
+}
+

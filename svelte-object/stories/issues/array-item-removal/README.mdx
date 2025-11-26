@@ -1,0 +1,55 @@
+When using `I.Array` with a `children` snippet and manually iterating with `{#each}`, removing items via `splice()` doesn't work correctly when using `name={index}`. The removed item "reappears" because the `I.Object` prescriptor writes its cached value back to the array.
+
+## Root Cause
+
+Using `I.Object name={k}` where `k` is an array index is fundamentally problematic because:
+
+1. The prescriptor is registered with a static index at mount time
+2. When array items shift (via splice), the prescriptor's index no longer corresponds to the correct item
+3. The sync effect writes the old value back to the shifted index
+
+## Solution
+
+Use the `item` snippet provided by `I.Array` instead of manual `{#each}` with `name={index}`. The `item` snippet:
+
+1. Uses object-identity keying internally: `(typeof valueItem === 'object' ? valueItem : i)`
+2. Provides `bind:value` on each item, bypassing the prescriptor system entirely
+3. Properly tracks item identity across array mutations
+
+```svelte
+<script lang="ts">
+  import I from 'svelte-object'
+  
+  let items = $state<Record<string, unknown>[]>([])
+</script>
+
+<I.Object>
+  {#snippet children(obj)}
+    <I.Array name="items" bind:value={items}>
+      {#snippet children(arr)}
+        <button onclick={() => items = [...items, {}]}>Add</button>
+      {/snippet}
+      {#snippet item(prop)}
+        <div>
+          <I.Object bind:value={prop.value}>
+            <I.Value name="text">
+              {#snippet children(p)}
+                <input bind:value={p.value} />
+              {/snippet}
+            </I.Value>
+          </I.Object>
+          <button onclick={() => items = items.filter((_, i) => i !== prop.index)}>
+            Remove
+          </button>
+        </div>
+      {/snippet}
+    </I.Array>
+  {/snippet}
+</I.Object>
+```
+
+Key points:
+- Use `bind:value={items}` on `I.Array` with an external `$state` variable
+- Use the `item` snippet instead of `children` with manual `{#each}`
+- Use `bind:value={prop.value}` on nested `I.Object` (no `name` prop)
+- Use `filter()` to create a new array reference for removal
