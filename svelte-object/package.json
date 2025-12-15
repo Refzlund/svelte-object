@@ -33,7 +33,8 @@
 		"fast-deep-equal": "^3"
 	},
 	"publishConfig": {
-		"directory": "_package"
+		"directory": "_package",
+		"provenance": true
 	},
 	"keywords": [
 		"svelte",
