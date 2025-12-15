@@ -1,5 +1,11 @@
 # svelte-object
 
+## 2.1.4
+
+### Patch Changes
+
+- fix(package): default export causes pre-mature consumption ([`f8fc24e`](https://github.com/Refzlund/svelte-object/commit/f8fc24ed3a6892754e911a5a67a37b2b4b0b0d73))
+
 ## 2.1.3
 
 ### Patch Changes
