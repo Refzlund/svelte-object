@@ -7,7 +7,7 @@
 		"package": "bunx repo-pack"
 	},
 	"license": "MIT",
-	"repository": "github:refzlund/svelte-object",
+	"repository": "github:Refzlund/svelte-object",
 	"homepage": "https://github.com/Refzlund/svelte-object",
 	"bugs": {
 		"url": "https://github.com/Refzlund/svelte-object/labels/bug"
