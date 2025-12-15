@@ -3,7 +3,6 @@
 	"version": "2.1.3",
 	"description": "A nested component Svelte 5 Runes pattern for structuring objects/arrays and their properties",
 	"type": "module",
-	"private": true,
 	"scripts": {
 		"package": "bunx repo-pack"
 	},
