@@ -1,27 +1,28 @@
 {
-  "private": true,
-  "scripts": {
-    "app": "cd app && bun run dev",
-    "package": "cd svelte-object && bun run package",
-    "publish": "bun run package && changeset publish",
-    "format": "bunx repo-format",
-    "stories": "bunx repo-storybook"
-  },
-  "type": "module",
-  "workspaces": [
-    "svelte-object"
-  ],
-  "devDependencies": {
-    "@changesets/cli": "^2.29.5",
-    "@refzlund/repo": "github:Refzlund/repo#next",
-    "@svitejs/changesets-changelog-github-compact": "^1.2.0",
-    "@types/bun": "^1.3.3",
-    "@types/node": "^22.19.1"
-  },
-  "publishConfig": {
-    "directory": "svelte-object/_package"
-  },
-  "dependencies": {
-    "svelte": "^5.44.1"
-  }
+	"private": true,
+	"scripts": {
+		"app": "cd app && bun run dev",
+		"package": "cd svelte-object && bun run package",
+		"publish": "bun run package && changeset publish",
+		"changeset": "changeset",
+		"format": "bunx repo-format",
+		"stories": "bunx repo-storybook"
+	},
+	"type": "module",
+	"workspaces": [
+		"svelte-object"
+	],
+	"devDependencies": {
+		"@changesets/cli": "^2.29.5",
+		"@refzlund/repo": "github:Refzlund/repo#next",
+		"@svitejs/changesets-changelog-github-compact": "^1.2.0",
+		"@types/bun": "^1.3.3",
+		"@types/node": "^22.19.1"
+	},
+	"publishConfig": {
+		"directory": "svelte-object/_package"
+	},
+	"dependencies": {
+		"svelte": "^5.44.1"
+	}
 }

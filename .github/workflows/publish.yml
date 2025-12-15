@@ -1,13 +1,14 @@
 name: Publish
 
 on:
-  workflow_run:
+  push:
     branches:
       - master
-    workflows: 
-      - Commit
-    types:
-      - completed
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -21,10 +22,19 @@ jobs:
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
-      
+
+      - name: Setup Node.js (for npm publish with OIDC)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Update npm for OIDC support
+        run: bun install -g npm@latest
+
       - name: Install Dependencies
         run: bun install
-      
+
       # https://github.com/changesets/action#with-publishing
       - name: Create Release Pull Request or Publish
         id: changesets
@@ -33,4 +43,3 @@ jobs:
           publish: bun run publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
